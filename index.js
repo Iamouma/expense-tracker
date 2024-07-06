@@ -1,70 +1,67 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const { body, validationResult } = require('express-validator');
-const path = require('path');
+const mysql = require('mysql');
+const bodyParser = require('body-parser');
+require('dotenv').config();
 
 const app = express();
-require('dotenv').config();
 const PORT = process.env.PORT || 3000;
-const secretKey = process.env.SECRET_KEY; // Replace with your actual secret key
+const secretKey = process.env.SECRET_KEY;
 
-// Middleware to parse JSON bodies
-app.use(express.json());
+app.use(bodyParser.json());
+app.use(express.static('public'));
 
-// Serve static files from the 'public' directory
-app.use(express.static(path.join(__dirname, 'public')));
-
-// Mock user data
-const users = [
-    {
-        id: 1,
-        username: 'user1',
-        password: '$2b$10$7QwksdKkYhYh97QwksdKkYhYh97QwksdKkYhYh97QwksdKkYhYh97' // 'password1' hashed
-    },
-    {
-        id: 2,
-        username: 'user2',
-        password: '$2b$10$8Ropnl8Ropnl8Ropnl8Ropnl8Ropnl8Ropnl8Ropnl8Ropnl8Ropnl' // 'password2' hashed
-    }
-];
-
-// Mock expense data
-let expenses = [
-    { id: 1, userId: 1, description: 'Groceries', amount: 50, date: '2024-07-01' },
-    { id: 2, userId: 1, description: 'Gas', amount: 30, date: '2024-07-02' },
-    { id: 3, userId: 2, description: 'Utilities', amount: 100, date: '2024-07-01' }
-];
-
-// POST /api/auth/login endpoint for user authentication
-app.post('/api/auth/login', async (req, res) => {
-    const { username, password } = req.body;
-
-    // Find user by username
-    const user = users.find(u => u.username === username);
-    if (!user) {
-        return res.status(400).json({ message: 'Invalid username or password' });
-    }
-
-    // Validate password
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) {
-        return res.status(400).json({ message: 'Invalid username or password' });
-    }
-
-    // Generate JWT token
-    const token = jwt.sign({ userId: user.id }, secretKey, { expiresIn: '1h' });
-
-    res.status(200).json({ message: 'Login successful', token });
+const db = mysql.createConnection({
+    host: process.env.MYSQL_HOST,
+    user: process.env.MYSQL_USER,
+    password: process.env.MYSQL_PASSWORD,
+    database: process.env.MYSQL_DATABASE
 });
 
-// Middleware to verify JWT token
+db.connect((err) => {
+    if (err) {
+        console.error('Error connecting to MySQL:', err);
+        return;
+    }
+    console.log('Connected to MySQL database');
+});
+
+// Register a new user
+app.post('/api/auth/register', async (req, res) => {
+    const { username, password } = req.body;
+    const hashedPassword = await bcrypt.hash(password, 10);
+    db.query('INSERT INTO users (username, password) VALUES (?, ?)', [username, hashedPassword], (err, results) => {
+        if (err) {
+            return res.status(500).json({ message: 'Error registering user', err });
+        }
+        res.status(201).json({ message: 'User registered successfully' });
+    });
+});
+
+// User login
+app.post('/api/auth/login', (req, res) => {
+    const { username, password } = req.body;
+    db.query('SELECT * FROM users WHERE username = ?', [username], async (err, results) => {
+        if (err || results.length === 0) {
+            return res.status(400).json({ message: 'Invalid username or password' });
+        }
+        const user = results[0];
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+        if (!isPasswordValid) {
+            return res.status(400).json({ message: 'Invalid username or password' });
+        }
+        const token = jwt.sign({ userId: user.id }, secretKey, { expiresIn: '1h' });
+        res.status(200).json({ message: 'Login successful', token });
+    });
+});
+
+// Middleware to verify JWT
 const verifyToken = (req, res, next) => {
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
         return res.status(401).json({ message: 'Unauthorized' });
     }
-
     const token = authHeader.split(' ')[1];
     jwt.verify(token, secretKey, (err, decoded) => {
         if (err) {
@@ -75,71 +72,89 @@ const verifyToken = (req, res, next) => {
     });
 };
 
-// GET /api/expenses: Retrieve all expenses for a user
+// Retrieve all expenses for a user
 app.get('/api/expenses', verifyToken, (req, res) => {
     const userId = req.userId;
-
-    const userExpenses = expenses.filter(expense => expense.userId === userId);
-    res.status(200).json(userExpenses);
+    db.query('SELECT * FROM expenses WHERE userId = ?', [userId], (err, results) => {
+        if (err) {
+            return res.status(500).json({ message: 'Error retrieving expenses', err });
+        }
+        res.status(200).json(results);
+    });
 });
 
-// POST /api/expenses: Add a new expense for a user
+// Add a new expense
 app.post('/api/expenses', verifyToken, (req, res) => {
-    const { userId, description, amount, date } = req.body;
-    if (!userId || !description || !amount || !date) {
+    const { description, amount, date } = req.body;
+    const userId = req.userId;
+    if (!description || !amount || !date) {
         return res.status(400).json({ message: 'All fields are required' });
     }
-
-    const newExpense = {
-        id: expenses.length + 1,
-        userId,
-        description,
-        amount,
-        date
-    };
-
-    expenses.push(newExpense);
-    res.status(201).json(newExpense);
+    db.query('INSERT INTO expenses (userId, description, amount, date) VALUES (?, ?, ?, ?)', [userId, description, amount, date], (err, results) => {
+        if (err) {
+            return res.status(500).json({ message: 'Error adding expense', err });
+        }
+        res.status(201).json({ id: results.insertId, userId, description, amount, date });
+    });
 });
 
-// PUT /api/expenses/:id: Update an existing expense
+// Update an existing expense
 app.put('/api/expenses/:id', verifyToken, (req, res) => {
     const expenseId = parseInt(req.params.id);
-    const { userId, description, amount, date } = req.body;
-
-    const expense = expenses.find(exp => exp.id === expenseId);
-    if (!expense) {
-        return res.status(404).json({ message: 'Expense not found' });
-    }
-
-    if (userId) expense.userId = userId;
-    if (description) expense.description = description;
-    if (amount) expense.amount = amount;
-    if (date) expense.date = date;
-
-    res.status(200).json(expense);
+    const { description, amount, date } = req.body;
+    db.query('SELECT * FROM expenses WHERE id = ?', [expenseId], (err, results) => {
+        if (err || results.length === 0) {
+            return res.status(404).json({ message: 'Expense not found' });
+        }
+        const updateFields = [];
+        const updateValues = [];
+        if (description) {
+            updateFields.push('description = ?');
+            updateValues.push(description);
+        }
+        if (amount) {
+            updateFields.push('amount = ?');
+            updateValues.push(amount);
+        }
+        if (date) {
+            updateFields.push('date = ?');
+            updateValues.push(date);
+        }
+        updateValues.push(expenseId);
+        db.query(`UPDATE expenses SET ${updateFields.join(', ')} WHERE id = ?`, updateValues, (err, results) => {
+            if (err) {
+                return res.status(500).json({ message: 'Error updating expense', err });
+            }
+            res.status(200).json({ message: 'Expense updated successfully' });
+        });
+    });
 });
 
-// DELETE /api/expenses/:id: Delete an existing expense
+// Delete an existing expense
 app.delete('/api/expenses/:id', verifyToken, (req, res) => {
     const expenseId = parseInt(req.params.id);
-    const expenseIndex = expenses.findIndex(exp => exp.id === expenseId);
-    if (expenseIndex === -1) {
-        return res.status(404).json({ message: 'Expense not found' });
-    }
-
-    const deletedExpense = expenses.splice(expenseIndex, 1);
-    res.status(200).json(deletedExpense);
+    db.query('SELECT * FROM expenses WHERE id = ?', [expenseId], (err, results) => {
+        if (err || results.length === 0) {
+            return res.status(404).json({ message: 'Expense not found' });
+        }
+        db.query('DELETE FROM expenses WHERE id = ?', [expenseId], (err, results) => {
+            if (err) {
+                return res.status(500).json({ message: 'Error deleting expense', err });
+            }
+            res.status(200).json({ message: 'Expense deleted successfully' });
+        });
+    });
 });
 
-// GET /api/expense: Calculate total expense for a user
+// Calculate total expense for a user
 app.get('/api/expense', verifyToken, (req, res) => {
     const userId = req.userId;
-
-    const userExpenses = expenses.filter(expense => expense.userId === userId);
-    const totalExpense = userExpenses.reduce((total, expense) => total + expense.amount, 0);
-
-    res.status(200).json({ totalExpense });
+    db.query('SELECT SUM(amount) as totalExpense FROM expenses WHERE userId = ?', [userId], (err, results) => {
+        if (err) {
+            return res.status(500).json({ message: 'Error calculating total expense', err });
+        }
+        res.status(200).json({ totalExpense: results[0].totalExpense });
+    });
 });
 
 // Error handling middleware
