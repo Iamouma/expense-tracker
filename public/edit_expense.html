@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Edit Expense - Expense Tracker</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Your Budget Buddy</h1>
+    </header>
+
+    <!-- navbar -->
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="register.html">Register</a>
+        <a href="login.html">Login</a>
+        <a href="add_expense.html">Add Expense</a>
+        <a href="#">Edit Expense</a>
+        <a href="view_expense.html">View Expenses</a>
+    </nav>
+
+    <!-- edit expense section -->
+    <section>
+        <div class="container">
+            <form>
+                <label for="date">Date:</label>
+                <input type="date" id="date" name="date" required>
+
+                <label for="category">Category:</label>
+                <input type="text" id="category" name="category" required>
+
+                <label for="amount">Amount:</label>
+                <input type="number" id="amount" name="amount" required>
+
+                <label for="description">Description:</label>
+                <input type="text" id="description" name="description">
+
+                <input type="submit" value="Update Expense">
+            </form>
+        </div>
+    </section>
+
+    <!-- footer section -->
+    <footer>
+        <p>&copy; 2024 Expense Tracker. All rights reserved.</p>
+    </footer>
+    
+    <script src="script.js"></script>
+</body>
+</html>

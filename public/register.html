@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Register - Expense Tracker</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Your Budget Buddy</h1>
+    </header>
+
+    <!-- navbar -->
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="#">Register</a>
+        <a href="login.html">Login</a>
+        <a href="add_expense.html">Add Expense</a>
+        <a href="edit_expense.html">Edit Expense</a>
+        <a href="view_expense.html">View Expenses</a>
+    </nav>
+
+    <!-- register section -->
+    <section>
+        <div class="container">
+            <form>
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required>
+
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+
+                <label for="phone">Phone Number:</label>
+                <input type="tel" id="phone" name="phone" required>
+
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+
+                <input type="submit" value="Register">
+            </form>
+            <p>
+                Already have an account? <a href="login.html">Login</a>
+            </p>
+        </div>
+    </section>
+
+    <!-- footer section -->
+    <footer>
+        <p>&copy; 2024 Expense Tracker. All rights reserved.</p>
+    </footer>
+    
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>View Expenses - Expense Tracker</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Your Budget Buddy</h1>
+    </header>
+
+    <!-- navbar -->
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="register.html">Register</a>
+        <a href="login.html">Login</a>
+        <a href="add_expense.html">Add Expense</a>
+        <a href="edit_expense.html">Edit Expense</a>
+        <a href="#">View Expenses</a>
+    </nav>
+
+    <!-- view expense section -->
+    <section>
+        <div class="container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Category</th>
+                        <th>Amount</th>
+                        <th>Description</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td data-label="Date">2024-07-01</td>
+                        <td data-label="Category">Food</td>
+                        <td data-label="Amount">$20.00</td>
+                        <td data-label="Description">Lunch at cafe</td>
+                        <td data-label="Actions">
+                            <a href="edit_expense.html">Edit</a>
+                            <a href="#">Delete</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td data-label="Date">2024-07-02</td>
+                        <td data-label="Category">Transport</td>
+                        <td data-label="Amount">$15.00</td>
+                        <td data-label="Description">Bus fare</td>
+                        <td data-label="Actions">
+                            <a href="edit_expense.html">Edit</a>
+                            <a href="#">Delete</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td data-label="Date">2024-07-02</td>
+                        <td data-label="Category">Transport</td>
+                        <td data-label="Amount">$15.00</td>
+                        <td data-label="Description">Bus fare</td>
+                        <td data-label="Actions">
+                            <a href="edit_expense.html">Edit</a>
+                            <a href="#">Delete</a>
+                        </td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+     <!-- footer section -->
+    <footer>
+        <p>&copy; 2024 Expense Tracker. All rights reserved.</p>
+    </footer>
+    
+    <script src="script.js"></script>
+</body>
+</html>
