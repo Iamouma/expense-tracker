@@ -53,6 +53,7 @@ document.getElementById("loginForm").addEventListener("submit", function(event) 
         if (data.success) {
             alert("Login successful!");
             // Optionally redirect to another page
+            window.location.href = "index.html";
         } else {
             alert("Login failed: " + data.message);
         }
