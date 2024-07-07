@@ -33,7 +33,7 @@ const authenticateToken = (req, res, next) => {
     const token = req.headers['authorization'] && req.headers['authorization'].split(' ')[1];
     if (!token) return res.sendStatus(401);
 
-    jwt.verify(token, 'your_secret_key', (err, user) => {
+    jwt.verify(token, 'SECRET_KEY', (err, user) => {
         if (err) return res.sendStatus(403);
         req.user = user;
         next();
@@ -121,14 +121,16 @@ app.post('/api/auth/login', (req, res) => {
 app.post('/api/expenses', authenticateToken, (req, res) => {
     const { name, amount, date } = req.body;
 
-    const query = 'INSERT INTO expenses (name, amount, date, user_id) VALUES (?, ?, ?, ?)';
-    db.query(query, [name, amount, date, req.user.id], (err, results) => {
+    console.log('Received request to add expense:', { name, amount, date });
+
+    const sql = 'INSERT INTO expenses (user_id, name, amount, date) VALUES (?, ?, ?, ?)';
+    db.query(sql, [req.user.id, name, amount, date], (err, result) => {
         if (err) {
             console.error('Error inserting expense into the database:', err);
-            res.status(500).json({ message: 'Internal Server Error' });
-        } else {
-            res.status(201).json({ message: 'Expense added successfully' });
+            return res.status(500).json({ success: false, message: 'Database error' });
         }
+        console.log('Expense added successfully:', result);
+        res.json({ success: true, message: 'Expense added successfully' });
     });
 });
 
@@ -136,50 +138,15 @@ app.post('/api/expenses', authenticateToken, (req, res) => {
 
 // Fetch all expenses for the authenticated user
 app.get('/api/expenses', authenticateToken, (req, res) => {
-    const query = 'SELECT * FROM expenses WHERE user_id = ?';
-    db.query(query, [req.user.id], (err, results) => {
+    const sql = 'SELECT * FROM expenses WHERE user_id = ?';
+    db.query(sql, [req.user.id], (err, results) => {
         if (err) {
             console.error('Error fetching expenses from the database:', err);
-            res.status(500).json({ message: 'Internal Server Error' });
-        } else {
-            res.status(200).json(results);
+            return res.status(500).json({ success: false, message: 'Database error' });
         }
+        res.json({ success: true, expenses: results });
     });
 });
-
-// Delete an expense
-app.delete('/api/expenses/:id', authenticateToken, (req, res) => {
-    const query = 'DELETE FROM expenses WHERE id = ? AND user_id = ?';
-    db.query(query, [req.params.id, req.user.id], (err, results) => {
-        if (err) {
-            console.error('Error deleting expense from the database:', err);
-            res.status(500).json({ message: 'Internal Server Error' });
-        } else if (results.affectedRows === 0) {
-            res.status(404).json({ message: 'Expense not found' });
-        } else {
-            res.status(200).json({ message: 'Expense deleted successfully' });
-        }
-    });
-});
-
-
-
-// Middleware to verify JWT
-const verifyToken = (req, res, next) => {
-    const authHeader = req.headers.authorization;
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-        return res.status(401).json({ message: 'Unauthorized' });
-    }
-    const token = authHeader.split(' ')[1];
-    jwt.verify(token, secretKey, (err, decoded) => {
-        if (err) {
-            return res.status(401).json({ message: 'Invalid token' });
-        }
-        req.userId = decoded.userId;
-        next();
-    });
-};
-
 
 
 // Error handling middleware
