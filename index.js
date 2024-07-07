@@ -63,23 +63,46 @@ app.post('/api/auth/register', (req, res) => {
 });
 
 
-
-// User login
+// Login route
 app.post('/api/auth/login', (req, res) => {
-    const { username, password } = req.body;
-    db.query('SELECT * FROM users WHERE username = ?', [username], async (err, results) => {
-        if (err || results.length === 0) {
-            return res.status(400).json({ message: 'Invalid username or password' });
+    const { email, password } = req.body;
+
+    // Find user by email
+    const query = 'SELECT * FROM users WHERE email = ?';
+    db.query(query, [email], (err, results) => {
+        if (err) {
+            console.error('Error querying database:', err);
+            return res.status(500).json({ success: false, message: 'Server error' });
         }
+
+        if (results.length === 0) {
+            return res.status(401).json({ success: false, message: 'Invalid email or password' });
+        }
+
         const user = results[0];
-        const isPasswordValid = await bcrypt.compare(password, user.password);
-        if (!isPasswordValid) {
-            return res.status(400).json({ message: 'Invalid username or password' });
-        }
-        const token = jwt.sign({ userId: user.id }, secretKey, { expiresIn: '1h' });
-        res.status(200).json({ message: 'Login successful', token });
+
+        // Compare passwords
+        bcrypt.compare(password, user.password, (err, isMatch) => {
+            if (err) {
+                console.error('Error comparing passwords:', err);
+                return res.status(500).json({ success: false, message: 'Server error' });
+            }
+
+            if (!isMatch) {
+                return res.status(401).json({ success: false, message: 'Invalid email or password' });
+            }
+
+            // Generate JWT
+            const token = jwt.sign({ id: user.id, email: user.email }, 'your_secret_key', {
+                expiresIn: '1h'
+            });
+
+            res.json({ success: true, token });
+        });
     });
 });
+
+
 
 // Middleware to verify JWT
 const verifyToken = (req, res, next) => {
