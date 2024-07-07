@@ -27,17 +27,42 @@ db.connect((err) => {
     console.log('Connected to MySQL database');
 });
 
-// Register a new user
-app.post('/api/auth/register', async (req, res) => {
-    const { username, password } = req.body;
-    const hashedPassword = await bcrypt.hash(password, 10);
-    db.query('INSERT INTO users (username, password) VALUES (?, ?)', [username, hashedPassword], (err, results) => {
+// Register endpoint
+app.post('/api/auth/register', (req, res) => {
+    const { username, email, phone, password } = req.body;
+
+    // Check if the user already exists
+    db.query('SELECT * FROM users WHERE email = ?', [email], (err, results) => {
         if (err) {
-            return res.status(500).json({ message: 'Error registering user', err });
+            console.error('Error querying the database:', err);
+            return res.status(500).json({ success: false, message: 'Server error' });
         }
-        res.status(201).json({ message: 'User registered successfully' });
+        if (results.length > 0) {
+            return res.status(400).json({ success: false, message: 'Email already registered' });
+        }
+
+        // Hash the password
+        bcrypt.hash(password, 10, (err, hashedPassword) => {
+            if (err) {
+                console.error('Error hashing the password:', err);
+                return res.status(500).json({ success: false, message: 'Server error' });
+            }
+
+            // Insert the new user into the database
+            const user = { username, email, phone, password: hashedPassword };
+            db.query('INSERT INTO users SET ?', user, (err, result) => {
+                if (err) {
+                    console.error('Error inserting user into the database:', err);
+                    return res.status(500).json({ success: false, message: 'Server error' });
+                }
+
+                res.json({ success: true, message: 'User registered successfully' });
+            });
+        });
     });
 });
+
+
 
 // User login
 app.post('/api/auth/login', (req, res) => {
