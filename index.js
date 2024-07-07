@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const mysql = require('mysql');
 const bodyParser = require('body-parser');
 require('dotenv').config();
+const cors = require('cors');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -26,6 +27,19 @@ db.connect((err) => {
     }
     console.log('Connected to MySQL database');
 });
+
+// JWT authentication middleware
+const authenticateToken = (req, res, next) => {
+    const token = req.headers['authorization'] && req.headers['authorization'].split(' ')[1];
+    if (!token) return res.sendStatus(401);
+
+    jwt.verify(token, 'your_secret_key', (err, user) => {
+        if (err) return res.sendStatus(403);
+        req.user = user;
+        next();
+    });
+};
+
 
 // Register endpoint
 app.post('/api/auth/register', (req, res) => {
@@ -63,7 +77,7 @@ app.post('/api/auth/register', (req, res) => {
 });
 
 
-// Login route
+// Login endpoint
 app.post('/api/auth/login', (req, res) => {
     const { email, password } = req.body;
 
@@ -103,6 +117,88 @@ app.post('/api/auth/login', (req, res) => {
 });
 
 
+// Add new expense endpoint
+app.post('/api/expenses', authenticateToken, (req, res) => {
+    const { name, amount, date } = req.body;
+
+    const query = 'INSERT INTO expenses (name, amount, date, user_id) VALUES (?, ?, ?, ?)';
+    db.query(query, [name, amount, date, req.user.id], (err, results) => {
+        if (err) {
+            console.error('Error inserting expense into the database:', err);
+            res.status(500).json({ message: 'Internal Server Error' });
+        } else {
+            res.status(201).json({ message: 'Expense added successfully' });
+        }
+    });
+});
+
+
+// Fetching an expense
+app.get('/api/expenses/:id', authenticateToken, (req, res) => {
+    const { id } = req.params;
+  
+    const query = 'SELECT * FROM expenses WHERE id = ? AND user_id = ?';
+    db.query(query, [id, req.user.id], (err, results) => {
+      if (err) {
+        console.error('Error fetching expense from the database:', err);
+        res.status(500).json({ message: 'Internal Server Error' });
+      } else if (results.length === 0) {
+        res.status(404).json({ message: 'Expense not found' });
+      } else {
+        res.json(results[0]);
+      }
+    });
+  });
+
+
+app.put('/api/expenses/:id', authenticateToken, (req, res) => {
+  const { id } = req.params;
+  const { name, amount, date } = req.body;
+
+  const query = 'UPDATE expenses SET name = ?, amount = ?, date = ? WHERE id = ? AND user_id = ?';
+  db.query(query, [name, amount, date, id, req.user.id], (err, result) => {
+    if (err) {
+      console.error('Error updating expense in the database:', err);
+      res.status(500).json({ message: 'Internal Server Error' });
+    } else if (result.affectedRows === 0) {
+      res.status(404).json({ message: 'Expense not found' });
+    } else {
+      res.json({ message: 'Expense updated successfully' });
+    }
+  });
+});
+
+app.delete('/api/expenses/:id', authenticateToken, (req, res) => {
+  const { id } = req.params;
+  const query = 'DELETE FROM expenses WHERE id = ? AND user_id = ?';
+  db.query(query, [id, req.user.id], (err, result) => {
+    if (err) {
+      console.error('Error deleting expense from the database:', err);
+      res.status(500).json({ message: 'Internal Server Error' });
+    } else if (result.affectedRows === 0) {
+      res.status(404).json({ message: 'Expense not found' });
+    } else {
+      res.json({ message: 'Expense deleted successfully' });
+    }
+  });
+});
+
+app.get('/api/expense', authenticateToken, (req, res) => {
+  const userId = req.user.id;
+
+  const query = 'SELECT SUM(amount) AS total_expense FROM expenses WHERE user_id = ?';
+  db.query(query, [userId], (err, results) => {
+    if (err) {
+      console.error('Error calculating total expense:', err);
+      res.status(500).json({ message: 'Internal Server Error' });
+    } else {
+      const totalExpense = results[0].total_expense || 0;
+      res.json({ total_expense: totalExpense });
+    }
+  });
+});
+
+
 
 // Middleware to verify JWT
 const verifyToken = (req, res, next) => {
@@ -120,90 +216,7 @@ const verifyToken = (req, res, next) => {
     });
 };
 
-// Retrieve all expenses for a user
-app.get('/api/expenses', verifyToken, (req, res) => {
-    const userId = req.userId;
-    db.query('SELECT * FROM expenses WHERE userId = ?', [userId], (err, results) => {
-        if (err) {
-            return res.status(500).json({ message: 'Error retrieving expenses', err });
-        }
-        res.status(200).json(results);
-    });
-});
 
-// Add a new expense
-app.post('/api/expenses', verifyToken, (req, res) => {
-    const { description, amount, date } = req.body;
-    const userId = req.userId;
-    if (!description || !amount || !date) {
-        return res.status(400).json({ message: 'All fields are required' });
-    }
-    db.query('INSERT INTO expenses (userId, description, amount, date) VALUES (?, ?, ?, ?)', [userId, description, amount, date], (err, results) => {
-        if (err) {
-            return res.status(500).json({ message: 'Error adding expense', err });
-        }
-        res.status(201).json({ id: results.insertId, userId, description, amount, date });
-    });
-});
-
-// Update an existing expense
-app.put('/api/expenses/:id', verifyToken, (req, res) => {
-    const expenseId = parseInt(req.params.id);
-    const { description, amount, date } = req.body;
-    db.query('SELECT * FROM expenses WHERE id = ?', [expenseId], (err, results) => {
-        if (err || results.length === 0) {
-            return res.status(404).json({ message: 'Expense not found' });
-        }
-        const updateFields = [];
-        const updateValues = [];
-        if (description) {
-            updateFields.push('description = ?');
-            updateValues.push(description);
-        }
-        if (amount) {
-            updateFields.push('amount = ?');
-            updateValues.push(amount);
-        }
-        if (date) {
-            updateFields.push('date = ?');
-            updateValues.push(date);
-        }
-        updateValues.push(expenseId);
-        db.query(`UPDATE expenses SET ${updateFields.join(', ')} WHERE id = ?`, updateValues, (err, results) => {
-            if (err) {
-                return res.status(500).json({ message: 'Error updating expense', err });
-            }
-            res.status(200).json({ message: 'Expense updated successfully' });
-        });
-    });
-});
-
-// Delete an existing expense
-app.delete('/api/expenses/:id', verifyToken, (req, res) => {
-    const expenseId = parseInt(req.params.id);
-    db.query('SELECT * FROM expenses WHERE id = ?', [expenseId], (err, results) => {
-        if (err || results.length === 0) {
-            return res.status(404).json({ message: 'Expense not found' });
-        }
-        db.query('DELETE FROM expenses WHERE id = ?', [expenseId], (err, results) => {
-            if (err) {
-                return res.status(500).json({ message: 'Error deleting expense', err });
-            }
-            res.status(200).json({ message: 'Expense deleted successfully' });
-        });
-    });
-});
-
-// Calculate total expense for a user
-app.get('/api/expense', verifyToken, (req, res) => {
-    const userId = req.userId;
-    db.query('SELECT SUM(amount) as totalExpense FROM expenses WHERE userId = ?', [userId], (err, results) => {
-        if (err) {
-            return res.status(500).json({ message: 'Error calculating total expense', err });
-        }
-        res.status(200).json({ totalExpense: results[0].totalExpense });
-    });
-});
 
 // Error handling middleware
 app.use((err, req, res, next) => {

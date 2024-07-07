@@ -52,7 +52,7 @@ document.getElementById("loginForm").addEventListener("submit", function(event) 
     .then(data => {
         if (data.success) {
             alert("Login successful!");
-            // Optionally redirect to another page
+            // redirect to another page
             window.location.href = "index.html";
         } else {
             alert("Login failed: " + data.message);
@@ -62,3 +62,76 @@ document.getElementById("loginForm").addEventListener("submit", function(event) 
         console.error("Error:", error);
     });
 });
+
+
+// Add expense JS
+document.getElementById('addExpenseForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const expenseName = document.getElementById('expenseName').value;
+    const expenseAmount = document.getElementById('expenseAmount').value;
+    const expenseDate = document.getElementById('expenseDate').value;
+
+    // Send a POST request to the backend to add the expense
+    const response = await fetch('/api/expenses', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify({ name: expenseName, amount: expenseAmount, date: expenseDate })
+    });
+
+    if (response.ok) {
+        alert('Expense added successfully!');
+        // update the UI or redirect to another page
+        window.location.href = 'view_expense.html';
+    } else {
+        alert('Failed to add expense.');
+    }
+});
+
+// Fetch the expense details from the backend and populate the form
+async function fetchExpenseDetails(expenseId) {
+    const response = await fetch(`/api/expenses/${expenseId}`, {
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+    });
+    const expense = await response.json();
+    document.getElementById('expenseId').value = expense.id;
+    document.getElementById('date').value = expense.date;
+    document.getElementById('category').value = expense.category;
+    document.getElementById('amount').value = expense.amount;
+    document.getElementById('description').value = expense.description;
+}
+
+// Handle form submission to update the expense
+document.getElementById('editExpenseForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const expenseId = document.getElementById('expenseId').value;
+    const date = document.getElementById('date').value;
+    const category = document.getElementById('category').value;
+    const amount = document.getElementById('amount').value;
+    const description = document.getElementById('description').value;
+
+    const response = await fetch(`/api/expenses/${expenseId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify({ date, category, amount, description })
+    });
+
+    if (response.ok) {
+        alert('Expense updated successfully!');
+        // Optionally, redirect to the view expenses page
+        window.location.href = 'view_expense.html';
+    } else {
+        alert('Failed to update expense.');
+    }
+});
+
+// Example: Fetch the details of an expense with ID 1 when the page loads
+fetchExpenseDetails(1);

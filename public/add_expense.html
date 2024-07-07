@@ -3,14 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Expense</title>
+    <title>Add Expense - Expense Tracker</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <header>
-        <h1>Add Expense</h1>
+        <h1>Your Budget Buddy</h1>
     </header>
 
+    <!-- Navbar -->
     <nav>
         <a href="index.html">Home</a>
         <a href="register.html">Register</a>
@@ -20,17 +21,23 @@
         <a href="view_expense.html">View Expenses</a>
     </nav>
 
+    <!-- Main Section -->
     <main>
+        <!-- Form to Add Expense -->
         <form id="addExpenseForm">
             <label for="expenseName">Expense Name:</label>
-            <input type="text" id="expenseName" required>
+            <input type="text" id="expenseName" name="expenseName" required>
+
             <label for="expenseAmount">Amount:</label>
-            <input type="number" id="expenseAmount" required>
+            <input type="number" id="expenseAmount" name="expenseAmount" required>
+
             <label for="expenseDate">Date:</label>
-            <input type="date" id="expenseDate" required>
+            <input type="date" id="expenseDate" name="expenseDate" required>
+
             <button type="submit">Add Expense</button>
         </form>
 
+        <!-- Table to Display Expenses -->
         <table id="expenseTable">
             <thead>
                 <tr>
@@ -45,13 +52,16 @@
             </tbody>
         </table>
 
+        <!-- Display Total Expenses -->
         <p id="totalExpenses">Total Expenses: $0.00</p>
     </main>
 
+    <!-- Footer Section -->
     <footer>
         <p>&copy; 2024 Expense Tracker. All rights reserved.</p>
     </footer>
 
     <script src="script.js"></script>
+
 </body>
 </html>

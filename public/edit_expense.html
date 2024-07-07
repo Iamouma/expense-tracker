@@ -11,7 +11,7 @@
         <h1>Your Budget Buddy</h1>
     </header>
 
-    <!-- navbar -->
+    <!-- Navbar -->
     <nav>
         <a href="index.html">Home</a>
         <a href="register.html">Register</a>
@@ -21,10 +21,14 @@
         <a href="view_expense.html">View Expenses</a>
     </nav>
 
-    <!-- edit expense section -->
+    <!-- Edit Expense Section -->
     <section>
         <div class="container">
-            <form>
+            <!-- Form to Edit Expense -->
+            <form id="editExpenseForm">
+                <!-- Hidden field to store the expense ID -->
+                <input type="hidden" id="expenseId" name="expenseId">
+                
                 <label for="date">Date:</label>
                 <input type="date" id="date" name="date" required>
 
@@ -42,11 +46,9 @@
         </div>
     </section>
 
-    <!-- footer section -->
+    <!-- Footer Section -->
     <footer>
         <p>&copy; 2024 Expense Tracker. All rights reserved.</p>
     </footer>
-    
-    <script src="script.js"></script>
 </body>
 </html>
