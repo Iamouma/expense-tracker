@@ -133,69 +133,33 @@ app.post('/api/expenses', authenticateToken, (req, res) => {
 });
 
 
-// Fetching an expense
-app.get('/api/expenses/:id', authenticateToken, (req, res) => {
-    const { id } = req.params;
-  
-    const query = 'SELECT * FROM expenses WHERE id = ? AND user_id = ?';
-    db.query(query, [id, req.user.id], (err, results) => {
-      if (err) {
-        console.error('Error fetching expense from the database:', err);
-        res.status(500).json({ message: 'Internal Server Error' });
-      } else if (results.length === 0) {
-        res.status(404).json({ message: 'Expense not found' });
-      } else {
-        res.json(results[0]);
-      }
+
+// Fetch all expenses for the authenticated user
+app.get('/api/expenses', authenticateToken, (req, res) => {
+    const query = 'SELECT * FROM expenses WHERE user_id = ?';
+    db.query(query, [req.user.id], (err, results) => {
+        if (err) {
+            console.error('Error fetching expenses from the database:', err);
+            res.status(500).json({ message: 'Internal Server Error' });
+        } else {
+            res.status(200).json(results);
+        }
     });
-  });
-
-
-app.put('/api/expenses/:id', authenticateToken, (req, res) => {
-  const { id } = req.params;
-  const { name, amount, date } = req.body;
-
-  const query = 'UPDATE expenses SET name = ?, amount = ?, date = ? WHERE id = ? AND user_id = ?';
-  db.query(query, [name, amount, date, id, req.user.id], (err, result) => {
-    if (err) {
-      console.error('Error updating expense in the database:', err);
-      res.status(500).json({ message: 'Internal Server Error' });
-    } else if (result.affectedRows === 0) {
-      res.status(404).json({ message: 'Expense not found' });
-    } else {
-      res.json({ message: 'Expense updated successfully' });
-    }
-  });
 });
 
+// Delete an expense
 app.delete('/api/expenses/:id', authenticateToken, (req, res) => {
-  const { id } = req.params;
-  const query = 'DELETE FROM expenses WHERE id = ? AND user_id = ?';
-  db.query(query, [id, req.user.id], (err, result) => {
-    if (err) {
-      console.error('Error deleting expense from the database:', err);
-      res.status(500).json({ message: 'Internal Server Error' });
-    } else if (result.affectedRows === 0) {
-      res.status(404).json({ message: 'Expense not found' });
-    } else {
-      res.json({ message: 'Expense deleted successfully' });
-    }
-  });
-});
-
-app.get('/api/expense', authenticateToken, (req, res) => {
-  const userId = req.user.id;
-
-  const query = 'SELECT SUM(amount) AS total_expense FROM expenses WHERE user_id = ?';
-  db.query(query, [userId], (err, results) => {
-    if (err) {
-      console.error('Error calculating total expense:', err);
-      res.status(500).json({ message: 'Internal Server Error' });
-    } else {
-      const totalExpense = results[0].total_expense || 0;
-      res.json({ total_expense: totalExpense });
-    }
-  });
+    const query = 'DELETE FROM expenses WHERE id = ? AND user_id = ?';
+    db.query(query, [req.params.id, req.user.id], (err, results) => {
+        if (err) {
+            console.error('Error deleting expense from the database:', err);
+            res.status(500).json({ message: 'Internal Server Error' });
+        } else if (results.affectedRows === 0) {
+            res.status(404).json({ message: 'Expense not found' });
+        } else {
+            res.status(200).json({ message: 'Expense deleted successfully' });
+        }
+    });
 });
 
 

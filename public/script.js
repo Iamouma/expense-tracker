@@ -135,3 +135,52 @@ document.getElementById('editExpenseForm').addEventListener('submit', async (e) 
 
 // Example: Fetch the details of an expense with ID 1 when the page loads
 fetchExpenseDetails(1);
+
+
+// Fetch expenses from backend
+async function fetchExpenses() {
+    const response = await fetch('/api/expenses', {
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+    });
+    const expenses = await response.json();
+    const expenseTableBody = document.querySelector('#expenseTable tbody');
+
+    expenses.forEach(expense => {
+        const row = document.createElement('tr');
+        
+        row.innerHTML = `
+            <td data-label="Date">${expense.date}</td>
+            <td data-label="Category">${expense.category}</td>
+            <td data-label="Amount">$${expense.amount.toFixed(2)}</td>
+            <td data-label="Description">${expense.description}</td>
+            <td data-label="Actions">
+                <a href="edit_expense.html?id=${expense.id}">Edit</a>
+                <a href="#" onclick="deleteExpense(${expense.id})">Delete</a>
+            </td>
+        `;
+
+        expenseTableBody.appendChild(row);
+    });
+}
+
+// Delete expense
+async function deleteExpense(id) {
+    const response = await fetch(`/api/expenses/${id}`, {
+        method: 'DELETE',
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+    });
+
+    if (response.ok) {
+        alert('Expense deleted successfully!');
+        location.reload();  // Reload to update the expense list
+    } else {
+        alert('Failed to delete expense.');
+    }
+}
+
+// Fetch expenses when the page loads
+document.addEventListener('DOMContentLoaded', fetchExpenses);
