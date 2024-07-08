@@ -1,6 +1,11 @@
 /* General Styling */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@200;400;700&family=Poppins:wght@200;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Jura:wght@700&family=Montserrat:wght@200;400;700&family=Poppins:wght@200;600;700&display=swap');
+
 body {
-    font-family: 'Arial', sans-serif;
+    font-family: 'Poppins', sans-serif;
+    font-weight: bold;
+    font-size: medium;
     margin: 0;
     padding: 0;
     background-color: #c5c7c5;
@@ -196,8 +201,8 @@ form label {
 
 form input[type="text"],
 form input[type="email"],
-form input[type="tel"],
-form input[type="password"] {
+form input[type="password"],
+form input[type="confirmpassword"] {
     width: 100%;
     padding: 8px;
     margin-top: 5px;
