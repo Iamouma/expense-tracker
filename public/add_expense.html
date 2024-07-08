@@ -30,12 +30,20 @@
 
     <main>
         <form id="addExpenseForm">
-            <label for="expenseName">Expense Name:</label>
-            <input type="text" id="expenseName" name="expenseName" required>
-            <label for="expenseAmount">Amount:</label>
-            <input type="number" id="expenseAmount" name="expenseAmount" required>
+            
+            
             <label for="expenseDate">Date:</label>
             <input type="date" id="expenseDate" name="expenseDate" required>
+
+            <label for="category">Category:</label>
+            <input type="text" id="category" name="category" required>
+
+            <label for="amount">Amount:</label>
+            <input type="number" id="amount" name="amount" required>
+
+            <label for="description">Description:</label>
+            <input type="text" id="description" name="description">
+
             <button type="submit">Add Expense</button>
         </form>
 
@@ -60,47 +68,5 @@
         <p>&copy; 2024 Expense Tracker. All rights reserved.</p>
     </footer>
 
-    <script>
-        document.getElementById('addExpenseForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-            const expenseName = document.getElementById('expenseName').value;
-            const expenseAmount = document.getElementById('expenseAmount').value;
-            const expenseDate = document.getElementById('expenseDate').value;
-
-            const data = {
-                name: expenseName,
-                amount: expenseAmount,
-                date: expenseDate
-            };
-
-            fetch('/api/expenses', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + localStorage.getItem('token')
-                },
-                body: JSON.stringify(data)
-            })
-            .then(response => {
-                if (!response.ok) {
-                    return response.json().then(err => { throw new Error(err.message) });
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (data.success) {
-                    alert('Expense added successfully');
-                    location.reload();
-                } else {
-                    alert('Error adding expense: ' + data.message);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred while adding the expense: ' + error.message);
-            });
-        });
-    </script>
-    
 </body>
 </html>

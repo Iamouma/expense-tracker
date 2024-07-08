@@ -19,8 +19,9 @@ header {
 }
 
 .container {
-    max-width: 800px;
-    margin: 0 auto;
+    margin-top: 30px;
+    max-width: 500px;
+    margin: 30px auto;
     padding: 20px;
     background-color: white;
     border-radius: 8px;
@@ -194,6 +195,10 @@ main {
 }
 
 /* Register Page */
+form {
+    max-width: 500px;
+    margin: 0 auto;
+}
 form label {
     display: block;
     margin-top: 10px;
@@ -289,10 +294,11 @@ form label {
 
 form input[type="date"],
 form input[type="text"],
-form input[type="number"] {
+form input[type="number"],
+form input[type="text"] {
     width: 100%;
     padding: 8px;
-    margin-top: 5px;
+    margin-top: 20px;
     margin-bottom: 10px;
     border: 1px solid #ddd;
     border-radius: 4px;
