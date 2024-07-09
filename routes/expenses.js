@@ -38,14 +38,37 @@ router.post('/', async (req, res) => {
 
 // Update an existing expense
 router.put('/:id', async (req, res) => {
-    const { id } = req.params;
-    const { amount, description } = req.body;
+    const expenseId = req.params.id;
+    const { date, amount, description } = req.body;
+
+    if (!expenseId || !date || !amount || !description) {
+        return res.status(400).json({ error: 'All fields are required' });
+    }
+
     try {
-        const [result] = await db.query('UPDATE expense SET amount = ?, description = ? WHERE id = ?', [amount, description, id]);
-        res.json({ message: 'Expense updated successfully' });
-    } catch (err) {
-        console.error('Error updating expense:', err);
-        res.status(500).json({ message: 'Internal Server Error' });
+        const query = 'UPDATE expense SET date = ?, amount = ?, description = ? WHERE expense_id = ?';
+        const [result] = await db.query(query, [date, amount, description, expenseId]);
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: 'Expense not found' });
+        }
+
+        res.status(200).json({ message: 'Expense updated successfully' });
+    } catch (error) {
+        console.error('Error updating expense:', error);
+        res.status(500).json({ error: 'Error updating expense' });
+    }
+});
+
+
+// GET /api/expenses - Fetch all expenses
+router.get('/', async (req, res) => {
+    try {
+        const [expenses] = await db.query('SELECT * FROM expense');
+        res.status(200).json(expenses);
+    } catch (error) {
+        console.error('Error fetching expenses:', error);
+        res.status(500).json({ error: 'Error fetching expenses' });
     }
 });
 

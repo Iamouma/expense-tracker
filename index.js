@@ -15,7 +15,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
 
 // API routes
-app.use('/api/register', registerRouter); // Register route
+app.use('/api/register', registerRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/expenses', expensesRouter);
 

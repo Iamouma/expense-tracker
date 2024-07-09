@@ -48,4 +48,22 @@ router.post('/login', async (req, res) => {
     }
 });
 
+// middleware/auth.js
+module.exports = (req, res, next) => {
+    const token = req.headers['authorization'];
+
+    if (!token) {
+        return res.status(401).json({ message: 'Unauthorized' });
+    }
+
+    try {
+        // Verify the token (implement token verification logic here)
+        const decoded = jwt.verify(token, 'JWT_SECRET');
+        req.user = decoded;
+        next();
+    } catch (error) {
+        res.status(401).json({ message: 'Invalid token' });
+    }
+};
+
 module.exports = router;
