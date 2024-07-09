@@ -1,41 +1,51 @@
+// routes/auth.js
+
 const express = require('express');
 const router = express.Router();
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs'); // For password hashing
+const jwt = require('jsonwebtoken'); // For generating JWT tokens
+const db = require('../db'); // Your database connection
 
-// Mock user data
-const users = [
-    { username: 'user1', password: '$2b$10$abc123' } // password: "password1" (hashed)
-];
-
-// Login endpoint
+// Login route
 router.post('/login', async (req, res) => {
-    const { username, password } = req.body;
+    const { email, password } = req.body;
 
-    const user = users.find(user => user.username === username);
-    if (!user) {
-        return res.status(400).json({ message: 'Invalid credentials' });
+    // Validate request body
+    if (!email || !password) {
+        return res.status(400).json({ message: 'Email and password are required' });
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) {
-        return res.status(400).json({ message: 'Invalid credentials' });
-    }
+    try {
+        // Check if user exists
+        const [user] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
+        if (!user || user.length === 0) {
+            return res.status(401).json({ message: 'Invalid credentials' });
+        }
 
-    const token = jwt.sign({ username: user.username }, process.env.JWT_SECRET, { expiresIn: '1h' });
-    res.json({ token });
+        // Verify password
+        const isMatch = await bcrypt.compare(password, user[0].password);
+        if (!isMatch) {
+            return res.status(401).json({ message: 'Invalid credentials' });
+        }
+
+        // User authenticated, generate JWT token
+        const payload = {
+            user: {
+                id: user[0].id,
+                email: user[0].email
+                // Add more data if needed
+            }
+        };
+
+        jwt.sign(payload, 'JWT_SECRET', { expiresIn: '1h' }, (err, token) => {
+            if (err) throw err;
+            res.json({ token }); // Send the JWT token as response
+        });
+
+    } catch (error) {
+        console.error('Error logging in user:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
 });
 
-
-const { check, validationResult } = require('express-validator');
-
-router.post('/login', [
-    check('username').isString(),
-    check('password').isString()
-], async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-    }
-});
 module.exports = router;

@@ -1,16 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>View Expenses - Expense Tracker</title>
+    <title>Login - Expense Tracker</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
-    <script defer src="script.js"></script>
 </head>
 <body>
-    
 
-    <!-- Navbar -->
+    <!-- navbar -->
     <nav class="navbar">
         <div class="brand-title">Brand</div>
         <a href="javascript:void(0);" class="toggle-button">
@@ -23,34 +21,16 @@
                 <li><a href="index.html">Home</a></li>
                 <li><a href="register.html">Register</a></li>
                 <li><a href="login.html">Login</a></li>
-                <li><a href="logout.html" onclick="logout()">Logout</a></li>
-                
+                <li><a href="#" onclick="logout()">Logout</a></li>
             </ul>
         </div>
     </nav>
 
-    <!-- View Expense Section -->
-    <section>
-        <div class="container">
-            <table id="expenseTable">
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Amount</th>
-                        <th>Description</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Expenses will be dynamically added here -->
-                </tbody>
-            </table>
-        </div>
-    </section>
-
-    <!-- Footer Section -->
+    <!-- footer section -->
     <footer>
         <p>&copy; 2024 Expense Tracker. All rights reserved.</p>
     </footer>
 
+    <script src="app.js"></script>
 </body>
 </html>
