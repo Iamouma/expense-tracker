@@ -6,6 +6,8 @@ toggleButton.addEventListener('click', () => {
     navbarLinks.classList.toggle('active');
 });
 
+
+// Add Expense JS
 document.addEventListener('DOMContentLoaded', () => {
     document.querySelector('#addExpenseForm').addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -13,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const expense = {
             user_id: 1, // Replace with dynamic user data if needed
             amount: document.querySelector('#amount').value,
+            category: document.querySelector('#category').value,
             description: document.querySelector('#description').value,
             date: document.querySelector('#expenseDate').value
         };
@@ -57,6 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
             expenseRow.innerHTML = `
                 <td>${expense.date}</td>
                 <td>${expense.user_id}</td>
+                <td>${expense.category}</td>
                 <td>${expense.amount}</td>
                 <td>${expense.description}</td>
             `;
@@ -148,79 +152,3 @@ document.getElementById('loginForm').addEventListener('submit', async (event) =>
         // Handle error or display message to user
     }
 });
-
-// Edit expense JS
-document.addEventListener('DOMContentLoaded', async () => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const expenseId = urlParams.get('id');
-
-    if (expenseId) {
-        try {
-            console.log('Fetching expense with ID:', expenseId);
-            const response = await fetch(`/api/expenses/${expenseId}`);
-            const expense = await response.json();
-            console.log('Fetched expense:', expense);
-
-            const expenseIdField = document.getElementById('expenseId');
-            const dateField = document.getElementById('date');
-            const amountField = document.getElementById('amount');
-            const descriptionField = document.getElementById('description');
-
-            if (expenseIdField && dateField && amountField && descriptionField) {
-                expenseIdField.value = expense.expense_id;
-                dateField.value = expense.date;
-                amountField.value = expense.amount;
-                descriptionField.value = expense.description;
-            } else {
-                console.error('One or more form elements not found');
-            }
-        } catch (error) {
-            console.error('Error fetching expense:', error);
-        }
-    }
-});
-
-// View expense JS
-document.addEventListener('DOMContentLoaded', async () => {
-    const expenseTableBody = document.querySelector('#expenseTable');
-    if (expenseTableBody) {
-        try {
-            console.log('Fetching expenses...');
-            const response = await fetch('/api/expenses');
-            const expenses = await response.json();
-            console.log('Fetched expenses:', expenses);
-
-            expenses.forEach(expense => {
-                const row = expenseTableBody.insertRow();
-
-                const dateCell = row.insertCell(0);
-                dateCell.textContent = expense.date;
-
-                const amountCell = row.insertCell(1);
-                amountCell.textContent = expense.amount;
-
-                const descriptionCell = row.insertCell(2);
-                descriptionCell.textContent = expense.description;
-
-                const actionsCell = row.insertCell(3);
-                const editLink = document.createElement('a');
-                editLink.href = `edit_expense.html?id=${expense.expense_id}`;
-                editLink.textContent = 'Edit';
-                actionsCell.appendChild(editLink);
-            });
-        } catch (error) {
-            console.error('Error fetching expenses:', error);
-        }
-    } else {
-        console.error('Expense table body not found');
-    }
-});
-
-function logout() {
-    // Clear localStorage or sessionStorage
-    localStorage.removeItem('authToken');
-    sessionStorage.removeItem('authToken');
-
-    // Redirect to login page
-    window.location.href = 'login.html';
-}
