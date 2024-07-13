@@ -6,6 +6,7 @@ toggleButton.addEventListener('click', () => {
     navbarLinks.classList.toggle('active');
 });
 
+
 // Intersection Observer API JS
 document.addEventListener("DOMContentLoaded", () => {
     const observerOptions = {
@@ -32,5 +33,3 @@ document.addEventListener("DOMContentLoaded", () => {
         navbarLinks.classList.toggle('active');
     });
 });
-
-// Register JS
