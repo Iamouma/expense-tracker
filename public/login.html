@@ -10,7 +10,7 @@
 
     <!-- navbar -->
     <nav class="navbar">
-        <div class="brand-title">Brand</div>
+        <div class="brand-title">Expense Tracker</div>
         <a href="javascript:void(0);" class="toggle-button">
             <span class="bar"></span>
             <span class="bar"></span>
@@ -27,16 +27,21 @@
     </nav>
 
     <!-- login section -->
-    <section>
+    <section class="login-section">
         <div class="container">
-            <form id="loginForm" action="/api/auth/login" method="POST"> <!-- Set action and method -->
-                <label for="email">Email:</label>
-                <input type="email" id="email" name="email" required>
+            <h2>Login to Your Account</h2>
+            <form id="loginForm" action="/api/auth/login" method="POST">
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
 
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password" required>
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
 
-                <input type="submit" value="Login">
+                <input type="submit" value="Login" class="cta-button">
             </form>
             <p>
                 Don't have an account? <a href="register.html">Register</a>

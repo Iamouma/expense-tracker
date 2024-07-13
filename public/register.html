@@ -10,7 +10,7 @@
 
     <!-- navbar -->
     <nav class="navbar">
-        <div class="brand-title">Brand</div>
+        <div class="brand-title">Expense Tracker</div>
         <a href="javascript:void(0);" class="toggle-button">
             <span class="bar"></span>
             <span class="bar"></span>
@@ -27,22 +27,31 @@
     </nav>
 
     <!-- register section -->
-    <section>
+    <section class="register-section">
         <div class="container">
+            <h2>Create Your Account</h2>
             <form id="registerForm">
-                <label for="username">Username:</label>
-                <input type="text" id="username" name="username" required>
+                <div class="form-group">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
 
-                <label for="email">Email:</label>
-                <input type="email" id="email" name="email" required>
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
 
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password" required>
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
 
-                <label for="confirmPassword">Confirm Password:</label>
-                <input type="password" id="confirmPassword" name="confirmPassword" required>
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password:</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" required>
+                </div>
 
-                <input type="submit" value="Register">
+                <input type="submit" value="Register" class="cta-button">
             </form>
             <p>
                 Already have an account? <a href="login.html">Login</a>

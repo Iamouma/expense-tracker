@@ -9,8 +9,8 @@ body {
     margin: 0;
     padding: 0;
     background-color: #c5c7c5;
-    padding-top: 60px;
-    padding-bottom: 60px;
+    padding-top: 55px;
+    padding-bottom: 55px;
 }
 
 header {
@@ -118,74 +118,60 @@ header {
 
 
 main {
-    max-width: 800px;
-    margin: 80px auto 40px;
-    padding: 20px;
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 1em;
+}
+
+section {
+    margin: 2em 0;
 }
 
 .welcome-section {
     text-align: center;
-    padding: 20px;
-    background-color: #66023C;
-    color: white;
-    border-radius: 8px;
-    margin-bottom: 20px;
-    font-size: large;
+    background-color: #e1f5fe;
+    padding: 2em;
 }
 
-.welcome-section .cta-button {
-    background-color: white;
-    color: #66023C;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
+.cta-button {
+    background-color: #00796b;
+    color: #fff;
+    padding: 0.5em 1em;
     text-decoration: none;
-    font-weight: bold;
-    font-size: large;
+    border-radius: 5px;
 }
 
-.welcome-section .cta-button:hover {
-    background-color: gray;
+.cta-button:hover {
+    background-color: black;
 }
 
-.features-section {
-    margin-bottom: 20px;
+.features-section, .benefits-section, .testimonials-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-.features-section h2 {
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-.features {
+.features, .benefits, .testimonials {
     display: flex;
     flex-wrap: wrap;
-    gap: 20px;
     justify-content: center;
+    gap: 1em;
 }
 
-.feature {
-    flex: 1 1 30%;
-    padding: 20px;
-    background-color: black;
-    border-radius: 8px;
+.feature, .benefit, .testimonial {
+    padding: 1em;
+    border-radius: 10px;
+    flex: 1;
+    min-width: 250px;
+    max-width: 300px;
     text-align: center;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-    font-size: large;
+    color: #fff;
+    opacity: 0;
+    transform: translateY(50px);
+    transition: opacity 1.2s ease-out, transform 1.2s ease-out;
 }
 
-.feature h3 {
-    margin-bottom: 10px;
-    color: whitesmoke;
-}
-
-.feature p {
-    margin-bottom: 10px;
-    color: whitesmoke;
+.feature.visible, .benefit.visible, .testimonial.visible {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 .about-section {
@@ -194,257 +180,198 @@ main {
     font-size: large;
 }
 
+
 /* Responsive styles */
-@media screen and (max-width: 600px) {
-    .features {
+@media (max-width: 768px) {
+    .navbar .navbar-links {
+        display: none;
+        width: 100%;
+    }
+
+    .navbar .navbar-links ul {
         flex-direction: column;
+        width: 100%;
+    }
+
+    .navbar .navbar-links ul li {
+        text-align: center;
+        margin: 1em 0;
+    }
+
+    .navbar .navbar-links ul li a {
+        width: 100%;
+    }
+
+    .toggle-button {
+        display: flex;
+    }
+
+    .toggle-button.active + .navbar-links {
+        display: flex;
     }
 }
+
 
 /* Register Page */
-form {
+.register-section {
+    background-color: #f5f5f5;
+    padding: 2em;
+    border-radius: 10px;
     max-width: 500px;
+    margin: 2em auto;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.register-section h2 {
+    text-align: center;
+    margin-bottom: 1em;
+}
+
+.form-group {
+    margin-bottom: 1em;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5em;
+}
+
+.form-group input {
+    width: calc(100% - 20px);
+    padding: 0.5em;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    display: block;
     margin: 0 auto;
 }
-form label {
+
+.cta-button {
     display: block;
-    margin-top: 10px;
-}
-
-form input[type="text"],
-form input[type="email"],
-form input[type="password"],
-form input[type="confirmpassword"] {
     width: 100%;
-    padding: 8px;
-    margin-top: 5px;
-    margin-bottom: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-weight: bold;
-}
-
-.container form input[type="submit"] {
-    background-color: #66023C;
-    color: white;
-    padding: 10px 20px;
+    padding: 0.5em;
+    background-color: #00796b;
+    color: #fff;
     border: none;
-    border-radius: 4px;
+    border-radius: 5px;
+    font-size: 1em;
     cursor: pointer;
-    font-size: large;
+    margin-top: 1em;
 }
 
-.container form input[type="submit"]:hover {
+.cta-button:hover {
     background-color: black;
 }
 
-/* Login Page */
-form input[type="email"],
-form input[type="password"] {
-    width: 100%;
-    padding: 8px;
-    margin-top: 5px;
-    margin-bottom: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+
+/* Login */
+.login-section {
+    background-color: #f5f5f5;
+    padding: 2em;
+    border-radius: 10px;
+    max-width: 500px;
+    margin: 2em auto;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-.container form input[type="submit"] {
-    background-color: #66023C;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
+.login-section h2 {
+    text-align: center;
+    margin-bottom: 1em;
 }
 
-form input[type="submit"]:hover {
-    background-color: black;
+.form-group {
+    margin-bottom: 1em;
 }
 
-/* Add Expense Page */ 
-form {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    max-width: 400px;
-    margin: 0 auto 20px auto; /* Center form and add bottom margin */
-}
-
-form label {
-    font-weight: bold;
-    margin-bottom: 5px;
-}
-
-form input[type="date"],
-form input[type="text"],
-form input[type="number"], 
-form input[type="text"] {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-weight: bold;
-}
-
-form button[type="submit"] {
-    background-color: #66023C;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: large;
-}
-
-form button[type="submit"]:hover {
-    background-color: black;
-}
-
-/* Table Styles */
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-}
-
-table, th, td {
-    border: 1px solid #ddd;
-}
-
-th, td {
-    padding: 12px;
-    text-align: left;
-}
-
-th {
-    background-color: #66023C;
-    color: white;
-}
-
-td a {
-    margin-right: 10px;
-    color: #66023C;
-    text-decoration: none;
-}
-
-td a:hover {
-    text-decoration: underline;
-}
-
-/* Total Expenses Paragraph */
-#totalExpenses {
-    font-size: 1.2rem;
-    font-weight: bold;
-    text-align: right;
-    margin-top: 20px;
-}
-
-
-/* Edit Expense Page */
-form label {
+.form-group label {
     display: block;
-    margin-top: 10px;
+    margin-bottom: 0.5em;
 }
 
-form input[type="date"],
-form input[type="text"],
-form input[type="number"],
-form input[type="text"] {
+.form-group input {
+    width: calc(100% - 20px);
+    padding: 0.5em;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    display: block;
+    margin: 0 auto;
+}
+
+.cta-button {
+    display: block;
     width: 100%;
-    padding: 8px;
-    margin-top: 20px;
-    margin-bottom: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-}
-
-form input[type="submit"] {
-    background-color: #66023C;
-    color: white;
-    padding: 10px 20px;
+    padding: 0.5em;
+    background-color: #00796b;
+    color: #fff;
     border: none;
-    border-radius: 4px;
+    border-radius: 5px;
+    font-size: 1em;
     cursor: pointer;
+    margin-top: 1em;
 }
 
-form input[type="submit"]:hover {
+.cta-button:hover {
     background-color: black;
 }
 
-/* View Expense Page */
-table {
+
+/* Add Expense Page */
+.add-expense-section {
+    background-color: #f5f5f5;
+    padding: 2em;
+    border-radius: 10px;
+    max-width: 500px;
+    margin: 2em auto;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.add-expense-section h2 {
+    text-align: center;
+    margin-bottom: 1em;
+}
+
+.form-group {
+    margin-bottom: 1em;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5em;
+}
+
+.form-group input {
+    width: calc(100% - 20px);
+    padding: 0.5em;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    display: block;
+    margin: 0 auto;
+}
+
+.cta-button {
+    display: block;
     width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
+    padding: 0.5em;
+    background-color: #00796b;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 1em;
+    cursor: pointer;
+    margin-top: 1em;
 }
 
-table, th, td {
-    border: 1px solid #ddd;
+.cta-button:hover {
+    background-color: #005f56;
 }
 
-th, td {
-    padding: 8px;
-    text-align: left;
-}
 
-th {
-    background-color: #66023C;
-    color: white;
-}
 
-td a {
-    margin-right: 10px;
-    color: #66023C;
-    text-decoration: none;
-}
 
-td a:hover {
-    text-decoration: underline;
-}
 
-/* Responsive styles */
-@media screen and (max-width: 600px) {
-    table, thead, tbody, th, td, tr {
-        display: block;
-    }
-    thead tr {
-        position: absolute;
-        top: -9999px;
-        left: -9999px;
-    }
-    tr {
-        margin: 0 0 1rem 0;
-    }
-    tr:nth-child(odd) {
-        background: #f5f5f5;
-    }
-    td {
-        border: none;
-        border-bottom: 1px solid #ddd;
-        position: relative;
-        padding-left: 50%;
-        white-space: normal;
-        text-align: left;
-    }
-    td:before {
-        position: absolute;
-        top: 50%;
-        left: 6px;
-        width: 45%;
-        padding-right: 10px;
-        white-space: nowrap;
-        content: attr(data-label);
-        transform: translateY(-50%);
-        font-weight: bold;
-    }
-}
-
-/* Existing CSS content */
-
+    
+/* Footer Section */
 footer {
-    background-color: #66023C;
+    background-color: #00796b;
     color: white;
     text-align: center;
     padding: 10px 0;
