@@ -34,10 +34,21 @@ document.addEventListener('DOMContentLoaded', () => {
             const newExpense = await response.json();
             console.log('Expense added:', newExpense); // Log response from server
 
-            // Update the DOM or fetch the updated expenses list
-            fetchExpenses();
+            if (newExpense.success) {
+                // Show success message
+                const successMessage = document.querySelector('#successMessage');
+                successMessage.style.display = 'block';
+
+                // Redirect to view page after 2 seconds
+                setTimeout(() => {
+                    window.location.href = 'view_expense.html';
+                }, 2000);
+            } else {
+                alert('Error adding expense: ' + newExpense.message);
+            }
         } catch (error) {
             console.error('Error adding expense:', error);
+            alert('Error adding expense');
         }
     });
 
@@ -151,4 +162,28 @@ document.getElementById('loginForm').addEventListener('submit', async (event) =>
         console.error('Error logging in:', error);
         // Handle error or display message to user
     }
+});
+
+// view_expenses.js
+document.addEventListener('DOMContentLoaded', () => {
+    fetch('/api/expenses')
+        .then(response => response.json())
+        .then(data => {
+            const expensesList = document.getElementById('expensesList');
+            data.expenses.forEach(expense => {
+                const expenseItem = document.createElement('div');
+                expenseItem.className = 'expense-item';
+                expenseItem.innerHTML = `
+                    <p>Date: ${expense.expenseDate}</p>
+                    <p>Category: ${expense.category}</p>
+                    <p>Amount: ${expense.amount}</p>
+                    <p>Description: ${expense.description}</p>
+                `;
+                expensesList.appendChild(expenseItem);
+            });
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error fetching expenses');
+        });
 });
