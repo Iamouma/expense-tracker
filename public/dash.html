@@ -10,7 +10,7 @@
 
     <!-- navbar -->
     <nav class="navbar">
-        <div class="brand-title">Brand</div>
+        <div class="brand-title">Expense Tracker</div>
         <a href="javascript:void(0);" class="toggle-button">
             <span class="bar"></span>
             <span class="bar"></span>
@@ -19,26 +19,26 @@
         <div class="navbar-links">
             <ul>
                 <li><a href="index.html">Home</a></li>
+                <li><a href="#">Dash</a></li>
                 <li><a href="add_expense.html">Add Expense</a></li>
                 <li><a href="edit_expense.html">Edit Expense</a></li>
                 <li><a href="view_expense.html">View Expenses</a></li>
-                <li><a href="logout.html">Logout</a></li> <!-- Add logout link if applicable -->
             </ul>
         </div>
     </nav>
 
     <!-- main content -->
-    <main>
+    <main class="dashboard">
         <h1>Welcome to Your Dashboard</h1>
-        <p>Here you can manage your expenses:</p>
+        <p>Manage your expenses effortlessly:</p>
 
         <!-- Example content -->
         <div class="dashboard-content">
-            <p>Quick Links:</p>
-            <ul>
-                <li><a href="add_expense.html">Add New Expense</a></li>
-                <li><a href="edit_expense.html">Edit Expenses</a></li>
-                <li><a href="view_expense.html">View All Expenses</a></li>
+            <h2>Quick Links:</h2>
+            <ul class="quick-links">
+                <li><a href="add_expense.html" class="cta-button">Add New Expense</a></li>
+                <li><a href="edit_expense.html" class="cta-button">Edit Expenses</a></li>
+                <li><a href="view_expense.html" class="cta-button">View All Expenses</a></li>
             </ul>
 
             <!-- Example: Display user-specific data or other dashboard content -->
@@ -50,6 +50,6 @@
         <p>&copy; 2024 Expense Tracker. All rights reserved.</p>
     </footer>
 
-    <script src="app.js"></script>
+    <script defer src="app.js"></script>
 </body>
 </html>
