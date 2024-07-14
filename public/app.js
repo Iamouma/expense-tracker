@@ -35,18 +35,6 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
-// Dashboard JS
-document.addEventListener("DOMContentLoaded", () => {
-    const toggleButton = document.querySelector('.toggle-button');
-    const navbarLinks = document.querySelector('.navbar-links');
-
-    toggleButton.addEventListener('click', () => {
-        toggleButton.classList.toggle('active');
-        navbarLinks.classList.toggle('active');
-    });
-});
-
-
 // Register JS
 document.addEventListener('DOMContentLoaded', () => {
     document.querySelector('#registerForm').addEventListener('submit', async (e) => {
