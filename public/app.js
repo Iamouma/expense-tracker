@@ -111,3 +111,21 @@ document.getElementById('loginForm').addEventListener('submit', async (event) =>
         // Handle error or display message to user
     }
 });
+
+
+// Logout JS
+document.addEventListener('DOMContentLoaded', () => {
+    const logoutButton = document.getElementById('logoutButton');
+
+    if (logoutButton) {
+        logoutButton.addEventListener('click', () => {
+            // Remove the JWT token from localStorage or cookies
+            localStorage.removeItem('token');
+            // Optionally, you can also clear sessionStorage if you store tokens there
+            // sessionStorage.removeItem('token');
+
+            // Redirect to the login page
+            window.location.href = 'login.html';
+        });
+    }
+});

@@ -6,6 +6,7 @@ const cors = require('cors');
 const port = 3000;
 const registerRouter = require('./routes/register');
 const authRouter = require('./routes/auth');
+const protectedRouter = require('./routes/protected');
 
 
 // Middleware to parse JSON bodies
@@ -19,6 +20,7 @@ app.use(express.static('public'));
 // API routes
 app.use('/api/register', registerRouter);
 app.use('/api/auth', authRouter);
+app.use('api', protectedRouter);
 
 
 // Error handling middleware
