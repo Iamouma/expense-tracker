@@ -20,7 +20,7 @@
         <div class="navbar-links">
             <ul>
                 <li><a href="index.html">Home</a></li>
-                <li><a href="view_expense.html">View</a></li>
+                <li><a href="view_expense.html">View Expenses</a></li>
                 <li><a href="login.html" id="logoutButton">Logout</a></li>
             </ul>
         </div>
@@ -56,6 +56,25 @@
 
                 <button type="submit" class="cta-button">Add Expense</button>
             </form>
+        </div>
+
+        <!-- Expense Table -->
+        <div class="container">
+            <h2>Expense List</h2>
+            <table id="expenseTable">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Category</th>
+                        <th>Amount</th>
+                        <th>Description</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Expense rows will be added dynamically -->
+                </tbody>
+            </table>
         </div>
     </main>
 

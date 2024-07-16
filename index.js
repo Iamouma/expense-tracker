@@ -6,13 +6,14 @@ const cors = require('cors');
 const port = 3000;
 const registerRouter = require('./routes/register');
 const authRouter = require('./routes/auth');
+const expensesRouter = require('./routes/expenses');
 const protectedRouter = require('./routes/protected');
 
 
 // Middleware to parse JSON bodies
 app.use(cors());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true })); // Parse URL-encoded bodies
+app.use(express.json());
+app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
 
 // Serve static files for the public directory
 app.use(express.static('public'));
@@ -20,6 +21,7 @@ app.use(express.static('public'));
 // API routes
 app.use('/api/register', registerRouter);
 app.use('/api/auth', authRouter);
+app.use('/api/expenses', expensesRouter);
 app.use('api', protectedRouter);
 
 
