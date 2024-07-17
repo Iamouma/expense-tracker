@@ -34,6 +34,7 @@
         <div class="container">
             <h2>Add New Expense</h2>
             <form id="addExpenseForm">
+                <input type="hidden" id="userId" name="userId" value="USER_ID_HERE"> 
                 <div class="form-group">
                     <label for="expenseDate">Date:</label>
                     <input type="date" id="expenseDate" name="expenseDate" required>
@@ -71,7 +72,7 @@
                         <th>Actions</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="expenseTableBody">
                     <!-- Expense rows will be added dynamically -->
                 </tbody>
             </table>
