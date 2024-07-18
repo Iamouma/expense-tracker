@@ -30,6 +30,8 @@ db.connect((err) => {
 
 const secretKey = process.env.SECRET_KEY;
 
+
+// Register JS
 app.post('/api/auth/register', async (req, res) => {
     const { username, email, password, confirmPassword } = req.body;
 
@@ -51,6 +53,8 @@ app.post('/api/auth/register', async (req, res) => {
         res.status(201).json({ message: 'User registered successfully' });
     });
 });
+
+
 
 app.post('/api/auth/login', (req, res) => {
     const { email, password } = req.body;
@@ -79,12 +83,12 @@ app.post('/api/auth/login', (req, res) => {
 });
 
 // Add Expense endpoint
-app.post('/api/expenses', (req, res) => {
+app.post('/api/expenses', verifyToken, (req, res) => {
     const { expenseDate, category, amount, description } = req.body;
+    const userId = req.userId;
 
-    // Assuming you have a MySQL connection db
-    const sql = 'INSERT INTO expenses (expenseDate, category, amount, description) VALUES (?, ?, ?, ?, )';
-    db.query(sql, [expenseDate, category, amount, description], (err, result) => {
+    const sql = 'INSERT INTO expenses (user_id, expenseDate, category, amount, description) VALUES (?, ?, ?, ?, ?)';
+    db.query(sql, [userId, expenseDate, category, amount, description], (err, result) => {
         if (err) {
             console.error('Error adding expense:', err);
             return res.status(500).json({ message: 'Failed to add expense' });
@@ -94,10 +98,12 @@ app.post('/api/expenses', (req, res) => {
     });
 });
 
-app.get('/api/expenses', (req, res) => {
-    // Assuming you have a MySQL connection db
-    const sql = 'SELECT * FROM expenses';
-    db.query(sql, (err, results) => {
+// Fetch all expenses for the logged-in user
+app.get('/api/expenses', verifyToken, (req, res) => {
+    const userId = req.userId;
+
+    const sql = 'SELECT * FROM expenses WHERE user_id = ?';
+    db.query(sql, [userId], (err, results) => {
         if (err) {
             console.error('Error fetching expenses:', err);
             return res.status(500).json({ message: 'Failed to fetch expenses' });
@@ -107,10 +113,12 @@ app.get('/api/expenses', (req, res) => {
 });
 
 // Fetch a single expense by ID
-app.get('/api/expenses/:id', (req, res) => {
+app.get('/api/expenses/:id', verifyToken, (req, res) => {
     const expenseId = req.params.id;
-    const sql = 'SELECT * FROM expenses WHERE expense_id = ?';
-    db.query(sql, [expenseId], (err, results) => {
+    const userId = req.userId;
+
+    const sql = 'SELECT * FROM expenses WHERE expense_id = ? AND user_id = ?';
+    db.query(sql, [expenseId, userId], (err, results) => {
         if (err) {
             console.error('Error fetching expense:', err);
             return res.status(500).json({ message: 'Failed to fetch expense' });
@@ -123,11 +131,13 @@ app.get('/api/expenses/:id', (req, res) => {
 });
 
 // Update an existing expense by ID
-app.put('/api/expenses/:id', (req, res) => {
+app.put('/api/expenses/:id', verifyToken, (req, res) => {
     const expenseId = req.params.id;
     const { expenseDate, category, amount, description } = req.body;
-    const sql = 'UPDATE expenses SET expenseDate = ?, category = ?, amount = ?, description = ? WHERE expense_id = ?';
-    db.query(sql, [expenseDate, category, amount, description, expenseId], (err, result) => {
+    const userId = req.userId;
+
+    const sql = 'UPDATE expenses SET expenseDate = ?, category = ?, amount = ?, description = ? WHERE expense_id = ? AND user_id = ?';
+    db.query(sql, [expenseDate, category, amount, description, expenseId, userId], (err, result) => {
         if (err) {
             console.error('Error updating expense:', err);
             return res.status(500).json({ message: 'Failed to update expense' });
@@ -137,10 +147,12 @@ app.put('/api/expenses/:id', (req, res) => {
 });
 
 // Delete an expense by ID
-app.delete('/api/expenses/:id', (req, res) => {
+app.delete('/api/expenses/:id', verifyToken, (req, res) => {
     const expenseId = req.params.id;
-    const sql = 'DELETE FROM expenses WHERE expense_id = ?';
-    db.query(sql, [expenseId], (err, result) => {
+    const userId = req.userId;
+
+    const sql = 'DELETE FROM expenses WHERE expense_id = ? AND user_id = ?';
+    db.query(sql, [expenseId, userId], (err, result) => {
         if (err) {
             console.error('Error deleting expense:', err);
             return res.status(500).json({ message: 'Failed to delete expense' });

@@ -5,9 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
+    <script defer src="app.js"></script>
 </head>
 <body>
-
     <!-- navbar -->
     <nav class="navbar">
         <div class="brand-title">Expense Tracker</div>
@@ -30,7 +30,7 @@
     <section class="login-section">
         <div class="container">
             <h2>Login to Your Account</h2>
-            <form id="loginForm" action="/api/auth/login" method="POST">
+            <form id="loginForm">
                 <div class="form-group">
                     <label for="email">Email:</label>
                     <input type="email" id="email" name="email" required>
@@ -43,6 +43,7 @@
 
                 <input type="submit" value="Login" class="cta-button">
             </form>
+            <p id="loginMessage" style="display: none;"></p>
             <p>
                 Don't have an account? <a href="register.html">Register</a>
             </p>
@@ -54,6 +55,43 @@
         <p>&copy; 2024 Expense Tracker. All rights reserved.</p>
     </footer>
 
-    <script defer src="app.js"></script>
+    <script>
+        const loginForm = document.getElementById('loginForm');
+
+        loginForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const formData = new FormData(loginForm);
+            const email = formData.get('email');
+            const password = formData.get('password');
+
+            try {
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to login');
+                }
+
+                const data = await response.json();
+                localStorage.setItem('token', `Bearer ${data.token}`);
+
+                // Redirect to add expense page after login
+                window.location.href = 'dash.html';
+            } catch (error) {
+                console.error('Error logging in:', error);
+            }
+        });
+
+        function logout() {
+            localStorage.removeItem('token');
+        }
+    </script>
+
 </body>
 </html>
