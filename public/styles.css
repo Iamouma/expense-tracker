@@ -28,6 +28,7 @@ header {
     background-color: white;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    overflow-x: auto; /* Ensures the container is scrollable if content overflows */
 }
 
 /* Navbar */
@@ -116,7 +117,6 @@ header {
     }
 }
 
-
 main {
     padding: 1em;
 }
@@ -137,26 +137,37 @@ section {
     padding: 0.5em 1em;
     text-decoration: none;
     border-radius: 5px;
+    font-size: 1rem; /* Adjusted font size */
+    display: inline-block;
+    width: auto; /* Ensure it doesn't take up too much space */
 }
 
 .cta-button:hover {
     background-color: black;
 }
 
-.features-section, .benefits-section, .testimonials-section {
+.finance-image {
+    width: 100%;
+    max-width: 600px;
+    height: auto;
+    margin: 20px auto;
+    display: block;
+}
+
+.features-section, .benefits-section {
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-.features, .benefits, .testimonials {
+.features, .benefits {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     gap: 1em;
 }
 
-.feature, .benefit, .testimonial {
+.feature, .benefit {
     padding: 1em;
     border-radius: 10px;
     flex: 1;
@@ -169,7 +180,7 @@ section {
     transition: opacity 1.2s ease-out, transform 1.2s ease-out;
 }
 
-.feature.visible, .benefit.visible, .testimonial.visible {
+.feature.visible, .benefit.visible {
     opacity: 1;
     transform: translateY(0);
 }
@@ -179,7 +190,6 @@ section {
     margin-bottom: 20px;
     font-size: large;
 }
-
 
 /* Responsive styles */
 @media (max-width: 768px) {
@@ -209,8 +219,11 @@ section {
     .toggle-button.active + .navbar-links {
         display: flex;
     }
+    .cta-button {
+        font-size: 0.875rem; /* Smaller font size for mobile */
+        padding: 0.4em 0.8em;
+    }
 }
-
 
 /* Register Page */
 .register-section {
@@ -246,8 +259,7 @@ section {
 }
 
 .cta-button {
-    display: block;
-    width: 100%;
+    display: inline-block;
     padding: 0.5em;
     background-color: #00796b;
     color: #fff;
@@ -256,6 +268,7 @@ section {
     font-size: 1em;
     cursor: pointer;
     margin-top: 1em;
+    width: auto;
 }
 
 .cta-button:hover {
@@ -297,9 +310,7 @@ section {
 }
 
 .cta-button {
-    display: block;
-    width: 100%;
-    padding: 0.5em;
+    display: inline-block;
     background-color: #00796b;
     color: #fff;
     border: none;
@@ -307,6 +318,7 @@ section {
     font-size: 1em;
     cursor: pointer;
     margin-top: 1em;
+    width: auto;
 }
 
 .cta-button:hover {
@@ -353,7 +365,7 @@ main {
 }
 
 .cta-button {
-    display: block;
+    display: inline-block;
     padding: 1em;
     background-color: #00796b;
     color: #fff;
@@ -361,6 +373,7 @@ main {
     border-radius: 5px;
     text-align: center;
     transition: background-color 0.3s;
+    width: auto;
 }
 
 .cta-button:hover {
@@ -401,8 +414,7 @@ main {
 }
 
 .cta-button {
-    display: block;
-    width: 50% 50%;
+    display: inline-block;
     padding: 0.5em;
     background-color: #00796b;
     color: #fff;
@@ -411,18 +423,19 @@ main {
     font-size: 1em;
     cursor: pointer;
     margin-top: 1em;
+     width: auto;
 }
 
 .cta-button:hover {
     background-color: black;
 }
 
-/*gfdsfghgfhj*/
+/*gfdsfghgfhj
 .container {
     max-width: 800px;
     margin: 0 auto;
     padding: 0 15px;
-}
+}*/
 
 /* Main content */
 .main-content {
@@ -438,20 +451,27 @@ form {
     margin-bottom: 20px;
 }
 
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+}
+
 table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 20px;
 }
 
-table th, table td {
-    padding: 10px;
-    border: 1px solid #ccc;
+table, th, td {
+    border: 1px solid #ddd;
+}
+
+th, td {
+    padding: 8px;
     text-align: left;
 }
 
-table th {
-    background-color: #f0f0f0;
+th {
+    background-color: #f2f2f2;
 }
 
 /* Buttons */
@@ -485,14 +505,14 @@ table th {
 
 @media (max-width: 768px) {
     .container {
-        padding: 0 10px;
+        padding: 0 5px;
     }
 
     table {
         font-size: 14px;
     }
 }
-    
+
 /* Footer Section */
 footer {
     background-color: #00796b;

@@ -80,10 +80,10 @@ app.post('/api/auth/login', (req, res) => {
 
 // Add Expense endpoint
 app.post('/api/expenses', (req, res) => {
-    const { userId, expenseDate, category, amount, description } = req.body;
+    const { expenseDate, category, amount, description } = req.body;
 
     // Assuming you have a MySQL connection db
-    const sql = 'INSERT INTO expenses (user_id, expenseDate, category, amount, description) VALUES (?, ?, ?, ?, )';
+    const sql = 'INSERT INTO expenses (expenseDate, category, amount, description) VALUES (?, ?, ?, ?, )';
     db.query(sql, [expenseDate, category, amount, description], (err, result) => {
         if (err) {
             console.error('Error adding expense:', err);
@@ -126,7 +126,7 @@ app.get('/api/expenses/:id', (req, res) => {
 app.put('/api/expenses/:id', (req, res) => {
     const expenseId = req.params.id;
     const { expenseDate, category, amount, description } = req.body;
-    const sql = 'UPDATE expenses SET expenseDate = ?, category = ?, amount = ?, description = ? WHERE id = ?';
+    const sql = 'UPDATE expenses SET expenseDate = ?, category = ?, amount = ?, description = ? WHERE expense_id = ?';
     db.query(sql, [expenseDate, category, amount, description, expenseId], (err, result) => {
         if (err) {
             console.error('Error updating expense:', err);
