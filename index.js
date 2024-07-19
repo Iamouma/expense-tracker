@@ -55,7 +55,7 @@ app.post('/api/auth/register', async (req, res) => {
 });
 
 
-
+// Login JS
 app.post('/api/auth/login', (req, res) => {
     const { email, password } = req.body;
 
@@ -81,6 +81,7 @@ app.post('/api/auth/login', (req, res) => {
         });
     });
 });
+
 
 // Add Expense endpoint
 app.post('/api/expenses', verifyToken, (req, res) => {
@@ -113,7 +114,7 @@ app.get('/api/expenses', verifyToken, (req, res) => {
 });
 
 // Fetch a single expense by ID
-app.get('/api/expenses/:id', verifyToken, (req, res) => {
+/*app.get('/api/expenses/:id', verifyToken, (req, res) => {
     const expenseId = req.params.id;
     const userId = req.userId;
 
@@ -165,4 +166,4 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
-});
+});*/

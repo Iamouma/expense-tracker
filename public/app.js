@@ -64,3 +64,45 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    fetchExpenses();
+});
+
+async function fetchExpenses() {
+    try {
+        const token = localStorage.getItem('token'); // Get token from local storage
+        const response = await fetch('/api/expenses', {
+            headers: {
+                'Authorization': `Bearer ${token}` // Send token in header
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch expenses');
+        }
+
+        const expenses = await response.json();
+        renderExpenseList(expenses);
+    } catch (error) {
+        console.error('Error fetching expenses:', error);
+        // Handle error scenario if necessary
+    }
+}
+
+function renderExpenseList(expenses) {
+    const expenseTableBody = document.getElementById('expenseTableBody');
+    expenseTableBody.innerHTML = '';
+
+    expenses.forEach(expense => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${expense.expenseDate}</td>
+            <td>${expense.category}</td>
+            <td>${expense.amount}</td>
+            <td>${expense.description}</td>
+        `;
+        expenseTableBody.appendChild(row);
+    });
+}

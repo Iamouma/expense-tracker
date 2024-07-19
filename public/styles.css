@@ -37,7 +37,7 @@ header {
     justify-content: space-between;
     align-items: center;
     padding: 20px;
-    background-color: #333;
+    background-color: #000000;
     color: white;
     position: fixed;
     top: 0;
@@ -62,7 +62,7 @@ header {
 }
 
 .navbar-links a {
-    color: white;
+    color: darkturquoise;
     text-decoration: none;
     font-size: 1.2rem;
 }
@@ -80,7 +80,7 @@ header {
 .toggle-button .bar {
     width: 25px;
     height: 3px;
-    background-color: white;
+    background-color: darkturquoise;
     margin: 3px 0;
 }
 
@@ -96,7 +96,7 @@ header {
         top: 60px; /* Adjust based on navbar height */
         left: 0;
         width: 100%;
-        background-color: #333;
+        background-color: #000000;
         align-items: center;
         padding: 10px 0;
     }
@@ -108,7 +108,7 @@ header {
 
     .navbar-links li {
         text-align: center;
-        padding: 10px 0;
+        padding: 0.5px;
         width: 100%;
     }
 
