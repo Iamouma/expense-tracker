@@ -65,44 +65,23 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+// Logout JS
+document.addEventListener('DOMContentLoaded', function () {
+    const logoutButton = document.getElementById('logoutButton');
 
-document.addEventListener('DOMContentLoaded', () => {
-    fetchExpenses();
+    if (logoutButton) {
+        logoutButton.addEventListener('click', function (event) {
+            event.preventDefault();
+            logout();
+        });
+    }
 });
 
-async function fetchExpenses() {
-    try {
-        const token = localStorage.getItem('token'); // Get token from local storage
-        const response = await fetch('/api/expenses', {
-            headers: {
-                'Authorization': `Bearer ${token}` // Send token in header
-            }
-        });
+function logout() {
+    // Remove the token from localStorage or sessionStorage
+    localStorage.removeItem('token');
+    sessionStorage.removeItem('token');
 
-        if (!response.ok) {
-            throw new Error('Failed to fetch expenses');
-        }
-
-        const expenses = await response.json();
-        renderExpenseList(expenses);
-    } catch (error) {
-        console.error('Error fetching expenses:', error);
-        // Handle error scenario if necessary
-    }
-}
-
-function renderExpenseList(expenses) {
-    const expenseTableBody = document.getElementById('expenseTableBody');
-    expenseTableBody.innerHTML = '';
-
-    expenses.forEach(expense => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td>${expense.expenseDate}</td>
-            <td>${expense.category}</td>
-            <td>${expense.amount}</td>
-            <td>${expense.description}</td>
-        `;
-        expenseTableBody.appendChild(row);
-    });
+    // Redirect to the login page
+    window.location.href = 'login.html';
 }

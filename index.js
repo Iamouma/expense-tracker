@@ -1,6 +1,8 @@
 require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
+const crypto = require('crypto');
+const nodemailer = require('nodemailer');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const mysql = require('mysql2');
@@ -83,6 +85,91 @@ app.post('/api/auth/login', (req, res) => {
 });
 
 
+// Configure Nodemailer with OAuth2 or App Passwords (example uses App Passwords)
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
+    }
+});
+
+// Password Reset Request Endpoint
+app.post('/api/auth/forgot-password', (req, res) => {
+    const { email } = req.body;
+
+    const sql = 'SELECT * FROM users WHERE email = ?';
+    db.query(sql, [email], (err, results) => {
+        if (err) {
+            return res.status(500).json({ message: 'Internal server error' });
+        }
+
+        if (results.length === 0) {
+            return res.status(404).json({ message: 'Email not found' });
+        }
+
+        const user = results[0];
+        const token = crypto.randomBytes(32).toString('hex');
+        const expiration = Date.now() + 3600000; // 1 hour
+
+        const resetTokenSql = 'UPDATE users SET resetPasswordToken = ?, resetPasswordExpires = ? WHERE email = ?';
+        db.query(resetTokenSql, [token, expiration, email], (err, result) => {
+            if (err) {
+                return res.status(500).json({ message: 'Internal server error' });
+            }
+
+            const resetUrl = `http://localhost:3000/reset_password.html?token=${token}`;
+            const mailOptions = {
+                from: process.env.EMAIL_USER,
+                to: email,
+                subject: 'Password Reset Request',
+                text: `You requested a password reset. Click the following link to reset your password: ${resetUrl}`,
+            };
+
+            transporter.sendMail(mailOptions, (error, info) => {
+                if (error) {
+                    return res.status(500).json({ message: 'Failed to send email' });
+                }
+                res.status(200).json({ message: 'Password reset email sent' });
+            });
+        });
+    });
+});
+
+// Password Reset Endpoint
+app.post('/api/auth/reset-password', (req, res) => {
+    const { token, password } = req.body;
+
+    const sql = 'SELECT * FROM users WHERE resetPasswordToken = ? AND resetPasswordExpires > ?';
+    db.query(sql, [token, Date.now()], async (err, results) => {
+        if (err) {
+            return res.status(500).json({ message: 'Internal server error' });
+        }
+
+        if (results.length === 0) {
+            return res.status(400).json({ message: 'Invalid or expired token' });
+        }
+
+        const user = results[0];
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        const updatePasswordSql = 'UPDATE users SET password = ?, resetPasswordToken = NULL, resetPasswordExpires = NULL WHERE id = ?';
+        db.query(updatePasswordSql, [hashedPassword, user.id], (err, result) => {
+            if (err) {
+                return res.status(500).json({ message: 'Internal server error' });
+            }
+            res.status(200).json({ message: 'Password reset successful' });
+        });
+    });
+});
+
+
+
+
+
+
+
+
 // Add Expense endpoint
 app.post('/api/expenses', verifyToken, (req, res) => {
     const { expenseDate, category, amount, description } = req.body;
@@ -113,57 +200,9 @@ app.get('/api/expenses', verifyToken, (req, res) => {
     });
 });
 
-// Fetch a single expense by ID
-/*app.get('/api/expenses/:id', verifyToken, (req, res) => {
-    const expenseId = req.params.id;
-    const userId = req.userId;
-
-    const sql = 'SELECT * FROM expenses WHERE expense_id = ? AND user_id = ?';
-    db.query(sql, [expenseId, userId], (err, results) => {
-        if (err) {
-            console.error('Error fetching expense:', err);
-            return res.status(500).json({ message: 'Failed to fetch expense' });
-        }
-        if (results.length === 0) {
-            return res.status(404).json({ message: 'Expense not found' });
-        }
-        res.status(200).json(results[0]);
-    });
-});
-
-// Update an existing expense by ID
-app.put('/api/expenses/:id', verifyToken, (req, res) => {
-    const expenseId = req.params.id;
-    const { expenseDate, category, amount, description } = req.body;
-    const userId = req.userId;
-
-    const sql = 'UPDATE expenses SET expenseDate = ?, category = ?, amount = ?, description = ? WHERE expense_id = ? AND user_id = ?';
-    db.query(sql, [expenseDate, category, amount, description, expenseId, userId], (err, result) => {
-        if (err) {
-            console.error('Error updating expense:', err);
-            return res.status(500).json({ message: 'Failed to update expense' });
-        }
-        res.status(200).json({ message: 'Expense updated successfully' });
-    });
-});
-
-// Delete an expense by ID
-app.delete('/api/expenses/:id', verifyToken, (req, res) => {
-    const expenseId = req.params.id;
-    const userId = req.userId;
-
-    const sql = 'DELETE FROM expenses WHERE expense_id = ? AND user_id = ?';
-    db.query(sql, [expenseId, userId], (err, result) => {
-        if (err) {
-            console.error('Error deleting expense:', err);
-            return res.status(500).json({ message: 'Failed to delete expense' });
-        }
-        res.status(200).json({ message: 'Expense deleted successfully' });
-    });
-});
 
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
-});*/
+});
