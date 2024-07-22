@@ -180,7 +180,7 @@
                 const token = localStorage.getItem('token');
 
                 try {
-                    const response = await fetch(`/api/expenses/${expenseid}`, {
+                    const response = await fetch(`/api/expenses/${expenseId}`, {
                         method: 'DELETE',
                         headers: {
                             'Authorization': token
