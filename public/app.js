@@ -142,7 +142,7 @@ document.addEventListener('DOMContentLoaded', () => {
             successMessage.style.display = 'block';
             setTimeout(() => {
                 successMessage.style.display = 'none';
-                window.location.href = 'view_expense.html'; // Redirect to view expense page
+                window.location.href = 'add_expense.html'; // Redirect to view expense page
             }, 3000);
         } catch (error) {
             console.error('Error updating expense:', error);
