@@ -1,1 +1,1 @@
-An expense tracker
+expense tracker
