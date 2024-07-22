@@ -13,6 +13,9 @@ const verifyToken = require('./verifyToken');
 const app = express();
 const port = 3000;
 
+// Middleware to verify the token
+app.use('/api/expenses', verifyToken);
+
 app.use(bodyParser.json());
 
 const db = mysql.createConnection({
@@ -164,39 +167,59 @@ app.post('/api/auth/reset-password', (req, res) => {
 });
 
 
-
-
-
-
-
-
-// Add Expense endpoint
-app.post('/api/expenses', verifyToken, (req, res) => {
+// Add a new expense
+app.post('/api/expenses', (req, res) => {
     const { expenseDate, category, amount, description } = req.body;
-    const userId = req.userId;
+    const userId = req.userId; // This comes from the verifyToken middleware
 
     const sql = 'INSERT INTO expenses (user_id, expenseDate, category, amount, description) VALUES (?, ?, ?, ?, ?)';
     db.query(sql, [userId, expenseDate, category, amount, description], (err, result) => {
         if (err) {
-            console.error('Error adding expense:', err);
-            return res.status(500).json({ message: 'Failed to add expense' });
+            return res.status(500).send('Error adding expense');
         }
-
-        res.status(201).json({ message: 'Expense added successfully' });
+        res.status(200).send('Expense added successfully');
     });
 });
 
-// Fetch all expenses for the logged-in user
-app.get('/api/expenses', verifyToken, (req, res) => {
-    const userId = req.userId;
+// Get all expenses for the logged-in user
+app.get('/api/expenses', (req, res) => {
+    const userId = req.userId; // This comes from the verifyToken middleware
 
     const sql = 'SELECT * FROM expenses WHERE user_id = ?';
     db.query(sql, [userId], (err, results) => {
         if (err) {
-            console.error('Error fetching expenses:', err);
-            return res.status(500).json({ message: 'Failed to fetch expenses' });
+            return res.status(500).send('Error fetching expenses');
         }
         res.status(200).json(results);
+    });
+});
+
+// Delete an expense
+app.delete('/api/expenses/:id', (req, res) => {
+    const expenseId = req.params.id;
+    const userId = req.userId; // This comes from the verifyToken middleware
+
+    const sql = 'DELETE FROM expenses WHERE id = ? AND user_id = ?';
+    db.query(sql, [expenseId, userId], (err, result) => {
+        if (err) {
+            return res.status(500).send('Error deleting expense');
+        }
+        res.status(200).send('Expense deleted successfully');
+    });
+});
+
+// Edit an expense
+app.put('/api/expenses/:id', (req, res) => {
+    const expenseId = req.params.id;
+    const userId = req.userId; // This comes from the verifyToken middleware
+    const { expenseDate, category, amount, description } = req.body;
+
+    const sql = 'UPDATE expenses SET expenseDate = ?, category = ?, amount = ?, description = ? WHERE id = ? AND user_id = ?';
+    db.query(sql, [expenseDate, category, amount, description, expenseId, userId], (err, result) => {
+        if (err) {
+            return res.status(500).send('Error updating expense');
+        }
+        res.status(200).send('Expense updated successfully');
     });
 });
 
