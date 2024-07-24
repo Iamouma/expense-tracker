@@ -194,20 +194,6 @@ app.get('/api/expenses', (req, res) => {
     });
 });
 
-// Delete an expense
-app.delete('/api/expenses/:id', (req, res) => {
-    const expenseId = req.params.id;
-    const userId = req.userId; // This comes from the verifyToken middleware
-
-    const sql = 'DELETE FROM expenses WHERE id = ? AND user_id = ?';
-    db.query(sql, [expenseId, userId], (err, result) => {
-        if (err) {
-            return res.status(500).send('Error deleting expense');
-        }
-        res.status(200).send('Expense deleted successfully');
-    });
-});
-
 // Edit an expense
 app.put('/api/expenses/:id', (req, res) => {
     const expenseId = req.params.id;
@@ -223,6 +209,33 @@ app.put('/api/expenses/:id', (req, res) => {
     });
 });
 
+// Delete Expense 
+app.delete('/api/expenses/:id', (req, res) => {
+    const expenseId = req.params.id;
+    const userId = req.userId; // Get the userId from the verified token
+
+    if (!expenseId || !userId) {
+        return res.status(400).json({ error: 'Invalid request' });
+    }
+
+    const deleteQuery = `
+        DELETE FROM expenses
+        WHERE expense_id = ? AND user_id = ?
+    `;
+
+    db.query(deleteQuery, [expenseId, userId], (err, result) => {
+        if (err) {
+            console.error('Error deleting expense:', err);
+            return res.status(500).json({ error: 'Failed to delete expense' });
+        }
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: 'Expense not found or unauthorized' });
+        }
+
+        res.json({ message: 'Expense deleted successfully' });
+    });
+});
 
 app.use(express.static(path.join(__dirname, 'public')));
 

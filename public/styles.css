@@ -8,16 +8,9 @@ body {
     font-size: medium;
     margin: 0;
     padding: 0;
-    background-color: #c5c7c5;
+    background-color: #c8cac8;
     padding-top: 55px;
     padding-bottom: 55px;
-}
-
-header {
-    background-color: #78184A;
-    color: white;
-    padding: 10px 0;
-    text-align: center;
 }
 
 .container {
@@ -25,7 +18,7 @@ header {
     max-width: 500px;
     margin: 45px auto;
     padding: 20px;
-    background-color: white;
+    background-color: rgb(255, 254, 254);
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     overflow-x: auto; /* Ensures the container is scrollable if content overflows */
@@ -37,8 +30,8 @@ header {
     justify-content: space-between;
     align-items: center;
     padding: 20px;
-    background-color: #000000;
-    color: white;
+    background-color: white;
+    color: #00796b;
     position: fixed;
     top: 0;
     width: 100%;
@@ -62,7 +55,7 @@ header {
 }
 
 .navbar-links a {
-    color: darkturquoise;
+    color: #00796b;
     text-decoration: none;
     font-size: 1.2rem;
 }
@@ -80,7 +73,7 @@ header {
 .toggle-button .bar {
     width: 25px;
     height: 3px;
-    background-color: darkturquoise;
+    background-color: #00796b;
     margin: 3px 0;
 }
 
@@ -96,7 +89,7 @@ header {
         top: 60px; /* Adjust based on navbar height */
         left: 0;
         width: 100%;
-        background-color: #000000;
+        background-color: white;
         align-items: center;
         padding: 10px 0;
     }
@@ -377,7 +370,7 @@ main {
 }
 
 .cta-button:hover {
-    background-color: #005f56;
+    background-color: black;
 }
 
 /* Add Expense Page */
@@ -430,13 +423,6 @@ main {
     background-color: black;
 }
 
-/*gfdsfghgfhj
-.container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 0 15px;
-}*/
-
 /* Main content */
 .main-content {
     padding: 20px;
@@ -471,7 +457,8 @@ th, td {
 }
 
 th {
-    background-color: #f2f2f2;
+    background-color: #00796b;
+    color: white;
 }
 
 /* Buttons */
@@ -487,7 +474,7 @@ th {
 }
 
 .cta-button:hover {
-    background-color: #005f56;
+    background-color: black;
 }
 
 .edit-button, .delete-button {
