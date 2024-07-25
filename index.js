@@ -209,7 +209,7 @@ app.put('/api/expenses/:id', (req, res) => {
     });
 });
 
-// Delete Expense 
+// Delete Expense
 app.delete('/api/expenses/:id', (req, res) => {
     const expenseId = req.params.id;
     const userId = req.userId; // Get the userId from the verified token
@@ -220,7 +220,7 @@ app.delete('/api/expenses/:id', (req, res) => {
 
     const deleteQuery = `
         DELETE FROM expenses
-        WHERE user_id = ?
+        WHERE expense_id = ? AND user_id = ?
     `;
 
     db.query(deleteQuery, [expenseId, userId], (err, result) => {
