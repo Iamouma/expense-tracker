@@ -155,7 +155,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function updateExpenseTable(expenses) {
-        // expenseTableBody.innerHTML = ''; // Clear previous rows
+        expenseTableBody.innerHTML = ''; // Clear previous rows
 
         expenses.forEach((expense) => {
             const row = document.createElement('tr');
@@ -165,8 +165,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td>${expense.amount}</td>
                 <td>${expense.description}</td>
                 <td>
-                    <button onclick="editExpense(${expense.expense_id})">Edit</button>
-                    <button onclick="deleteExpense(${expense.expense_id})">Delete</button>
+                    <button class="edit-button" onclick="editExpense(${expense.expense_id})">Edit</button>
+                    <button class="delete-button" onclick="deleteExpense(${expense.expense_id})">Delete</button>
                 </td>
             `;
             expenseTableBody.appendChild(row);

@@ -477,17 +477,18 @@ th {
     background-color: black;
 }
 
-.Edit, .Delete {
+.edit-button, .delete-button {
     background-color: #00796b;
     color: #fff;
     border: none;
     padding: 5px 10px;
     cursor: pointer;
     border-radius: 5px;
+    margin: 4px 2px;
 }
 
 .edit-button:hover, .delete-button:hover {
-    background-color: #005f56;
+    background-color: black;
 }
 
 @media (max-width: 768px) {
