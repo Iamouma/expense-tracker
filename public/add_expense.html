@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+*/*-*/*--*/*--<!DOCTYPE html>-
 <html lang="en">
 <head>
     <title>Add Expense - Expense Tracker</title>
@@ -108,7 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
+                    'Authorization': token
                 },
                 body: JSON.stringify(expenseData)
             });
@@ -139,7 +139,7 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const response = await fetch('/api/expenses', {
                 headers: {
-                    'Authorization': `Bearer ${token}`
+                    'Authorization': token
                 }
             });
 
@@ -186,7 +186,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const response = await fetch(`/api/expenses/${expenseId}`, {
                     method: 'DELETE',
                     headers: {
-                        'Authorization': `Bearer ${token}`
+                        'Authorization': token
                     }
                 });
 
