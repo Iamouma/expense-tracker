@@ -477,7 +477,7 @@ th {
     background-color: black;
 }
 
-.edit-button, .delete-button {
+.editExpense, .deleteExpense {
     background-color: #00796b;
     color: #fff;
     border: none;

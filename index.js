@@ -220,7 +220,7 @@ app.delete('/api/expenses/:id', (req, res) => {
 
     const deleteQuery = `
         DELETE FROM expenses
-        WHERE expense_id = ? AND user_id = ?
+        WHERE user_id = ?
     `;
 
     db.query(deleteQuery, [expenseId, userId], (err, result) => {
