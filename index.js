@@ -195,12 +195,12 @@ app.get('/api/expenses', (req, res) => {
 });
 
 // Edit an expense
-app.put('/api/expenses/:id', (req, res) => {
+app.put('/api/expenses/:id', verifyToken, (req, res) => {
     const expenseId = req.params.id;
     const userId = req.userId; // This comes from the verifyToken middleware
     const { expenseDate, category, amount, description } = req.body;
 
-    const sql = 'UPDATE expenses SET expenseDate = ?, category = ?, amount = ?, description = ? WHERE id = ? AND user_id = ?';
+    const sql = 'UPDATE expenses SET expenseDate = ?, category = ?, amount = ?, description = ? WHERE expense_id = ? AND user_id = ?';
     db.query(sql, [expenseDate, category, amount, description, expenseId, userId], (err, result) => {
         if (err) {
             return res.status(500).send('Error updating expense');
