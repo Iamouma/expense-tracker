@@ -194,6 +194,26 @@ app.get('/api/expenses', (req, res) => {
     });
 });
 
+// Update expense by ID
+app.put('/api/expenses/:id', verifyToken, (req, res) => {
+    const expenseId = req.params.id;
+    const userId = req.userId;
+    const { expenseDate, category, amount, description } = req.body;
+
+    const sql = 'UPDATE expenses SET expenseDate = ?, category = ?, amount = ?, description = ?, updated_at = NOW() WHERE expense_id = ? AND user_id = ?';
+    db.query(sql, [expenseDate, category, amount, description, expenseId, userId], (err, result) => {
+        if (err) {
+            return res.status(500).send('Error updating expense');
+        }
+
+        if (result.affectedRows === 0) {
+            return res.status(404).send('Expense not found or unauthorized');
+        }
+
+        res.status(200).send('Expense updated successfully');
+    });
+});
+
 // Delete Expense
 app.delete('/api/expenses/:id', (req, res) => {
     const expenseId = req.params.id;
