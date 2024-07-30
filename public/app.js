@@ -87,6 +87,7 @@ function logout() {
 }
 
 
+
 document.addEventListener('DOMContentLoaded', () => {
     const editExpenseForm = document.getElementById('editExpenseForm');
     const successMessage = document.getElementById('successMessage');
@@ -100,7 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const response = await fetch(`/api/expenses/${expenseId}`, {
                 headers: {
-                    'Authorization': token
+                    'Authorization': `Bearer ${token}`
                 }
             });
 
@@ -110,7 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const expense = await response.json();
 
-            document.getElementById('expenseDate').value = expense.date.split('T')[0];
+            document.getElementById('expenseDate').value = expense.expenseDate.split('T')[0];
             document.getElementById('category').value = expense.category;
             document.getElementById('amount').value = expense.amount;
             document.getElementById('description').value = expense.description;
@@ -139,7 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': token
+                    'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify(updatedExpenseData)
             });
@@ -152,6 +153,7 @@ document.addEventListener('DOMContentLoaded', () => {
             successMessage.style.display = 'block';
             setTimeout(() => {
                 successMessage.style.display = 'none';
+                window.location.href = 'add_expense.html';
             }, 3000);
         } catch (error) {
             console.error('Error updating expense:', error);
