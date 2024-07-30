@@ -27,7 +27,7 @@
 
     <!-- main content -->
     <main class="add-expense-section">
-        <div id="successMessage" style="display:none; color: green; text-align: center; margin-bottom: 1em;">
+        <div id="successMessage" style="display: none; color: green; text-align: center; margin-bottom: 1em;">
             Expense successfully added!
         </div>
         <div class="container">
@@ -123,7 +123,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Show success message
             successMessage.style.display = 'block';
             setTimeout(() => {
-                successMessage.style.display = 'none';
+                successMessage.style.display = 'block';
             }, 3000);
 
             // Fetch and update the expense list

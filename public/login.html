@@ -28,6 +28,9 @@
 
     <!-- login section -->
     <section class="login-section">
+        <div id="successMessage" style="display: none; color: green; text-align: center; margin-bottom: 1em;">
+            Successfully logged in!
+        </div>
         <div class="container">
             <h2>Login to Your Account</h2>
             <form id="loginForm">
@@ -60,7 +63,7 @@
 
     <script>
         const loginForm = document.getElementById('loginForm');
-
+        const successMessage = document.getElementById('successMessage');
         loginForm.addEventListener('submit', async (event) => {
             event.preventDefault();
 
@@ -83,6 +86,12 @@
 
                 const data = await response.json();
                 localStorage.setItem('token', `Bearer ${data.token}`);
+
+                // Show success message
+                successMessage.style.display = 'block';
+                setTimeout(() => {
+                    successMessage.style.display = 'block';
+                }, 10000);
 
                 // Redirect to add expense page after login
                 window.location.href = 'dash.html';
