@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Edit Expense - Expense Tracker</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <script defer src="edit_expense.js"></script>
+</head>
+<body>
+    <!-- navbar -->
+    <nav class="navbar">
+        <div class="brand-title">CENTII</div>
+        <a href="javascript:void(0);" class="toggle-button">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </a>
+        <div class="navbar-links">
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="add_expense.html">Add Expense</a></li>
+                <li><a href="login.html" id="logoutButton" onclick="logout()">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- main content -->
+    <main class="edit-expense-section">
+        <div id="successMessage" style="display: none; color: green; text-align: center; margin-bottom: 1em;">
+            Expense successfully updated!
+        </div>
+        <div class="container">
+            <h2>Edit Expense</h2>
+            <form id="editExpenseForm">
+                <div class="form-group">
+                    <label for="expenseDate">Date:</label>
+                    <input type="date" id="expenseDate" name="expenseDate" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="category">Category:</label>
+                    <input type="text" id="category" name="category">
+                </div>
+
+                <div class="form-group">
+                    <label for="amount">Amount:</label>
+                    <input type="number" id="amount" name="amount" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Description:</label>
+                    <input type="text" id="description" name="description">
+                </div>
+
+                <button type="submit" class="cta-button">Update Expense</button>
+            </form>
+        </div>
+    </main>
+
+    <!-- footer section -->
+    <footer>
+        <p>&copy; 2024 Centii. All rights reserved.</p>
+    </footer>
+</body>
+</html>
