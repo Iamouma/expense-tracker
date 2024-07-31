@@ -197,13 +197,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    async function fetchExpensesByMonth() {
+    async function fetchExpensesByMonth(page = 1) {
         const month = document.getElementById('month').value;
         const year = document.getElementById('year').value;
         const token = localStorage.getItem('token');
+        const itemsPerPage = 10;
 
         try {
-            const response = await fetch(`/api/expenses/month/${year}/${month}`, {
+            const response = await fetch(`/api/expenses/month/${year}/${month}?page=${page}&limit=${itemsPerPage}`, {
                 headers: {
                     'Authorization': token
                 }
@@ -213,8 +214,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 throw new Error('Failed to fetch expenses');
             }
 
-            const expenses = await response.json();
-            updateExpenseTable(expenses);
+            const data = await response.json();
+            updateExpenseTable(data.expenses);
+            updatePaginationControls(data.currentPage, data.totalPages);
         } catch (error) {
             console.error('Error fetching expenses:', error);
         }
@@ -274,7 +276,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const formData = new FormData(downloadReportForm);
         const reportMonth = formData.get('reportMonth');
-        
+
         const token = localStorage.getItem('token');
         try {
             const response = await fetch(`/api/expenses/report?month=${reportMonth}`, {
@@ -309,30 +311,6 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentPage = 1;
     const itemsPerPage = 10;
 
-    async function fetchExpensesByMonth(page = 1) {
-        const month = document.getElementById('month').value;
-        const year = document.getElementById('year').value;
-        const token = localStorage.getItem('token');
-
-        try {
-            const response = await fetch(`/api/expenses/month/${year}/${month}?page=${page}&limit=${itemsPerPage}`, {
-                headers: {
-                    'Authorization': token
-                }
-            });
-
-            if (!response.ok) {
-                throw new Error('Failed to fetch expenses');
-            }
-
-            const { expenses, total, page: currentPage, limit } = await response.json();
-            updateExpenseTable(expenses);
-            updatePaginationControls(currentPage, Math.ceil(total / limit));
-        } catch (error) {
-            console.error('Error fetching expenses:', error);
-        }
-    }
-
     function updatePaginationControls(currentPage, totalPages) {
         document.getElementById('pageNumber').textContent = currentPage;
 
@@ -356,8 +334,11 @@ document.addEventListener('DOMContentLoaded', () => {
     fetchExpenseList();
 
     // Add event listener for the filter button
-    document.querySelector('button[onclick="fetchExpensesByMonth()"]').addEventListener('click', fetchExpensesByMonth);
+    document.querySelector('button[onclick="fetchExpensesByMonth()"]').addEventListener('click', () => {
+        currentPage = 1; // Reset to first page when filtering
+        fetchExpensesByMonth(currentPage);
+    });
 });
-    </script>
+   </script>
 </body>
 </html>
