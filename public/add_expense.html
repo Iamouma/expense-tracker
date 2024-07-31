@@ -1,4 +1,4 @@
-<!DOCTYPE html>-
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <title>Add Expense - Expense Tracker</title>
@@ -30,7 +30,7 @@
         <div id="successMessage" style="display: none; color: green; text-align: center; margin-bottom: 1em;">
             Expense successfully added!
         </div>
-    
+
         <div class="container">
             <h2>Add New Expense</h2>
             <form id="addExpenseForm">
@@ -58,7 +58,7 @@
             </form>
         </div>
 
-        <!-- Add this to your HTML file inside the main content section -->
+        <!-- Filter section -->
         <div class="filter-section">
             <label for="month">Month:</label>
             <select id="month">
@@ -101,6 +101,18 @@
                 </table>
             </div>
         </div>
+
+        <!-- Report Download Section -->
+        <div class="container">
+            <h2>Download Monthly Report</h2>
+            <form id="downloadReportForm">
+                <div class="form-group">
+                    <label for="reportMonth">Month:</label>
+                    <input type="month" id="reportMonth" name="reportMonth" required>
+                </div>
+                <button type="submit" class="cta-button">Download Report</button>
+            </form>
+        </div>
     </main>
 
     <!-- footer section -->
@@ -108,12 +120,12 @@
         <p>&copy; 2024 Centii. All rights reserved.</p>
     </footer>
 
-    <script>   
-
+    <script>
 document.addEventListener('DOMContentLoaded', () => {
     const addExpenseForm = document.getElementById('addExpenseForm');
     const successMessage = document.getElementById('successMessage');
     const expenseTableBody = document.getElementById('expenseTableBody');
+    const downloadReportForm = document.getElementById('downloadReportForm');
 
     addExpenseForm.addEventListener('submit', async (event) => {
         event.preventDefault();
@@ -250,6 +262,38 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    downloadReportForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const formData = new FormData(downloadReportForm);
+        const reportMonth = formData.get('reportMonth');
+        
+        const token = localStorage.getItem('token');
+        try {
+            const response = await fetch(`/api/expenses/report?month=${reportMonth}`, {
+                headers: {
+                    'Authorization': token
+                }
+            });
+
+            if (response.ok) {
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `Monthly_Report_${reportMonth}.pdf`; // Adjust file extension as needed
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                window.URL.revokeObjectURL(url);
+            } else {
+                throw new Error('Failed to download report');
+            }
+        } catch (error) {
+            console.error('Error downloading report:', error);
+        }
+    });
+
     function logout() {
         localStorage.removeItem('token');
         window.location.href = 'login.html';
@@ -258,9 +302,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Fetch and display expenses on page load
     fetchExpenseList();
 
-     // Add event listener for the filter button
-     document.querySelector('button[onclick="fetchExpensesByMonth()"]').addEventListener('click', fetchExpensesByMonth);
-});               
+    // Add event listener for the filter button
+    document.querySelector('button[onclick="fetchExpensesByMonth()"]').addEventListener('click', fetchExpensesByMonth);
+});
     </script>
 </body>
 </html>
