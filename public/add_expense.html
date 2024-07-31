@@ -30,6 +30,7 @@
         <div id="successMessage" style="display: none; color: green; text-align: center; margin-bottom: 1em;">
             Expense successfully added!
         </div>
+    
         <div class="container">
             <h2>Add New Expense</h2>
             <form id="addExpenseForm">
@@ -55,6 +56,29 @@
 
                 <button type="submit" class="cta-button">Add Expense</button>
             </form>
+        </div>
+
+        <!-- Add this to your HTML file inside the main content section -->
+        <div class="filter-section">
+            <label for="month">Month:</label>
+            <select id="month">
+                <option value="1">January</option>
+                <option value="2">February</option>
+                <option value="3">March</option>
+                <option value="4">April</option>
+                <option value="5">May</option>
+                <option value="6">June</option>
+                <option value="7">July</option>
+                <option value="8">August</option>
+                <option value="9">September</option>
+                <option value="10">October</option>
+                <option value="11">November</option>
+                <option value="12">December</option>
+            </select>
+
+            <label for="year">Year:</label>
+            <input type="number" id="year" value="2024"> <!-- Set default year or current year -->
+            <button onclick="fetchExpensesByMonth()">Filter</button>
         </div>
 
         <!-- Expense Table -->
@@ -154,6 +178,29 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    async function fetchExpensesByMonth() {
+        const month = document.getElementById('month').value;
+        const year = document.getElementById('year').value;
+        const token = localStorage.getItem('token');
+
+        try {
+            const response = await fetch(`/api/expenses/month/${year}/${month}`, {
+                headers: {
+                    'Authorization': token
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch expenses');
+            }
+
+            const expenses = await response.json();
+            updateExpenseTable(expenses);
+        } catch (error) {
+            console.error('Error fetching expenses:', error);
+        }
+    }
+
     function updateExpenseTable(expenses) {
         expenseTableBody.innerHTML = ''; // Clear previous rows
 
@@ -210,6 +257,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Fetch and display expenses on page load
     fetchExpenseList();
+
+     // Add event listener for the filter button
+     document.querySelector('button[onclick="fetchExpensesByMonth()"]').addEventListener('click', fetchExpensesByMonth);
 });               
     </script>
 </body>
