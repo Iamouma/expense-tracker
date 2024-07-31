@@ -195,20 +195,6 @@ app.get('/api/expenses', (req, res) => {
     });
 });
 
-/*// Add this route in your backend routes file (e.g., expenses.js)
-app.get('/api/expenses/month/:year/:month', verifyToken, (req, res) => {
-    const { year, month } = req.params;
-    const userId = req.userId;
-
-    const sql = 'SELECT * FROM expenses WHERE user_id = ? AND YEAR(expenseDate) = ? AND MONTH(expenseDate) = ?';
-    db.query(sql, [userId, year, month], (err, results) => {
-        if (err) {
-            return res.status(500).json({ error: 'Failed to fetch expenses' });
-        }
-        res.status(200).json(results);
-    });
-});*/
-
 // Update expense by ID
 app.put('/api/expenses/:id', verifyToken, (req, res) => {
     const expenseId = req.params.id;
