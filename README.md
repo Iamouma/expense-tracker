@@ -1,11 +1,3 @@
-expense tracker
-
-getting the readme 
-
-Sure, here is a comprehensive and detailed README for your expense tracker application "CENTII":
-
----
-
 # CENTII Expense Tracker
 
 CENTII is a comprehensive expense tracker application designed to help users manage their personal finances efficiently. It allows users to add, view, edit, and delete expenses, as well as filter expenses by month and download monthly reports. This README provides an overview of the project's features, setup instructions, and usage guidelines.
@@ -64,8 +56,8 @@ CENTII is a comprehensive expense tracker application designed to help users man
 
 1. **Clone the repository:**
    ```sh
-   git clone https://github.com/yourusername/centii-expense-tracker.git
-   cd centii-expense-tracker
+   git clone https://github.com/Iamouma/expense-tracker.git
+   cd expense-tracker
    ```
 
 2. **Install backend dependencies:**
@@ -208,5 +200,3 @@ Include screenshots of your application here to give users a visual overview.
 This project is licensed under the MIT License.
 
 ---
-
-Replace the placeholders like `https://github.com/yourusername/centii-expense-tracker.git` with your actual repository URL and add any additional information that might be relevant to your project.
