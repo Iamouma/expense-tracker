@@ -102,6 +102,13 @@
             </div>
         </div>
 
+        <!-- Pagination Controls -->
+        <div class="pagination">
+            <button onclick="previousPage()">Previous</button>
+            <span id="pageNumber">1</span>
+            <button onclick="nextPage()">Next</button>
+        </div>
+
         <!-- Report Download Section -->
         <div class="container">
             <h2>Download Monthly Report</h2>
@@ -297,6 +304,52 @@ document.addEventListener('DOMContentLoaded', () => {
     function logout() {
         localStorage.removeItem('token');
         window.location.href = 'login.html';
+    }
+
+    let currentPage = 1;
+    const itemsPerPage = 10;
+
+    async function fetchExpensesByMonth(page = 1) {
+        const month = document.getElementById('month').value;
+        const year = document.getElementById('year').value;
+        const token = localStorage.getItem('token');
+
+        try {
+            const response = await fetch(`/api/expenses/month/${year}/${month}?page=${page}&limit=${itemsPerPage}`, {
+                headers: {
+                    'Authorization': token
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch expenses');
+            }
+
+            const { expenses, total, page: currentPage, limit } = await response.json();
+            updateExpenseTable(expenses);
+            updatePaginationControls(currentPage, Math.ceil(total / limit));
+        } catch (error) {
+            console.error('Error fetching expenses:', error);
+        }
+    }
+
+    function updatePaginationControls(currentPage, totalPages) {
+        document.getElementById('pageNumber').textContent = currentPage;
+
+        document.querySelector('.pagination button[onclick="previousPage()"]').disabled = currentPage === 1;
+        document.querySelector('.pagination button[onclick="nextPage()"]').disabled = currentPage === totalPages;
+    }
+
+    window.previousPage = function() {
+        if (currentPage > 1) {
+            currentPage--;
+            fetchExpensesByMonth(currentPage);
+        }
+    }
+
+    window.nextPage = function() {
+        currentPage++;
+        fetchExpensesByMonth(currentPage);
     }
 
     // Fetch and display expenses on page load

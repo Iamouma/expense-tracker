@@ -195,7 +195,7 @@ app.get('/api/expenses', (req, res) => {
     });
 });
 
-// Add this route in your backend routes file (e.g., expenses.js)
+/*// Add this route in your backend routes file (e.g., expenses.js)
 app.get('/api/expenses/month/:year/:month', verifyToken, (req, res) => {
     const { year, month } = req.params;
     const userId = req.userId;
@@ -207,7 +207,7 @@ app.get('/api/expenses/month/:year/:month', verifyToken, (req, res) => {
         }
         res.status(200).json(results);
     });
-});
+});*/
 
 // Update expense by ID
 app.put('/api/expenses/:id', verifyToken, (req, res) => {
@@ -254,6 +254,42 @@ app.delete('/api/expenses/:id', (req, res) => {
         }
 
         res.json({ message: 'Expense deleted successfully' });
+    });
+});
+
+// Add this route in your backend routes file (e.g., expenses.js)
+app.get('/api/expenses/month/:year/:month', verifyToken, (req, res) => {
+    const { year, month } = req.params;
+    const userId = req.userId;
+    const { page = 1, limit = 10 } = req.query; // Default to page 1 and 10 items per page
+
+    const offset = (page - 1) * limit;
+
+    // Get the total number of expenses for pagination
+    const countSql = 'SELECT COUNT(*) as count FROM expenses WHERE user_id = ? AND YEAR(expenseDate) = ? AND MONTH(expenseDate) = ?';
+    db.query(countSql, [userId, year, month], (err, countResult) => {
+        if (err) {
+            return res.status(500).json({ error: 'Failed to fetch expense count' });
+        }
+
+        const total = countResult[0].count;
+        const totalPages = Math.ceil(total / limit);
+
+        // Fetch paginated expenses
+        const sql = 'SELECT * FROM expenses WHERE user_id = ? AND YEAR(expenseDate) = ? AND MONTH(expenseDate) = ? LIMIT ? OFFSET ?';
+        db.query(sql, [userId, year, month, parseInt(limit), parseInt(offset)], (err, results) => {
+            if (err) {
+                return res.status(500).json({ error: 'Failed to fetch expenses' });
+            }
+
+            res.status(200).json({
+                expenses: results,
+                total,
+                totalPages,
+                currentPage: parseInt(page),
+                limit: parseInt(limit)
+            });
+        });
     });
 });
 
