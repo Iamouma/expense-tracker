@@ -123,7 +123,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Show success message
             successMessage.style.display = 'block';
             setTimeout(() => {
-                successMessage.style.display = 'block';
+                successMessage.style.display = 'none';
             }, 3000);
 
             // Fetch and update the expense list
@@ -159,8 +159,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         expenses.forEach((expense) => {
             const row = document.createElement('tr');
+            const localDate = new Date(expense.expenseDate).toLocaleDateString();
             row.innerHTML = `
-                <td>${expense.expenseDate}</td>
+                <td>${localDate}</td>
                 <td>${expense.category}</td>
                 <td>${expense.amount}</td>
                 <td>${expense.description}</td>
