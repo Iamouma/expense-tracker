@@ -6,6 +6,7 @@ const nodemailer = require('nodemailer');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const mysql = require('mysql2');
+const PDFDocument = require('pdfkit');
 const path = require('path');
 const verifyToken = require('./verifyToken');
 
@@ -253,6 +254,51 @@ app.delete('/api/expenses/:id', (req, res) => {
         }
 
         res.json({ message: 'Expense deleted successfully' });
+    });
+});
+
+// Endpoint to download monthly report as PDF
+app.get('/api/expenses/report', verifyToken, async (req, res) => {
+    const userId = req.userId;
+    const month = req.query.month; // Expect month as a query parameter (e.g., '2023-07')
+
+    const sql = `
+        SELECT * FROM expenses 
+        WHERE user_id = ? AND DATE_FORMAT(expenseDate, '%Y-%m') = ?
+    `;
+    
+    db.query(sql, [userId, month], (err, results) => {
+        if (err) {
+            return res.status(500).send('Error generating report');
+        }
+
+        // Create a new PDF document
+        const doc = new PDFDocument();
+        let filename = `Monthly_Report_${month}.pdf`;
+        filename = encodeURIComponent(filename);
+
+        // Set response headers
+        res.setHeader('Content-disposition', `attachment; filename="${filename}"`);
+        res.setHeader('Content-type', 'application/pdf');
+
+        doc.pipe(res);
+
+        // Add content to PDF
+        doc.fontSize(20).text(`Monthly Report for ${month}`, {
+            align: 'center'
+        });
+
+        doc.moveDown();
+
+        results.forEach(expense => {
+            doc.fontSize(12).text(`Date: ${expense.expenseDate}`);
+            doc.text(`Category: ${expense.category}`);
+            doc.text(`Amount: ${expense.amount}`);
+            doc.text(`Description: ${expense.description}`);
+            doc.moveDown();
+        });
+
+        doc.end();
     });
 });
 
