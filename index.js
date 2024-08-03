@@ -308,6 +308,7 @@ app.get('/api/expenses/report', verifyToken, async (req, res) => {
         // Add content to PDF
         doc.fontSize(20).text(`Monthly Report for ${month}`, {
             align: 'center'
+            
         });
 
         doc.moveDown();

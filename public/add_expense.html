@@ -27,10 +27,6 @@
 
     <!-- main content -->
     <main class="add-expense-section">
-        <div id="successMessage" style="display: none; color: green; text-align: center; margin-bottom: 1em;">
-            Expense successfully added!
-        </div>
-
         <div class="container">
             <h2>Add New Expense</h2>
             <form id="addExpenseForm">
@@ -56,7 +52,10 @@
 
                 <button type="submit" class="cta-button">Add Expense</button>
             </form>
-        </div>        
+        </div>
+        <div id="successMessage" style="display: none; color: green; text-align: center; margin-bottom: 1em;">
+            Expense successfully added!
+        </div>     
 
         <!-- Expense Table -->
         <div class="container">
@@ -83,6 +82,7 @@
         <div class="filter-section">
             <label for="month">Month:</label>
             <select id="month">
+                <option value="0">--</option>
                 <option value="1">January</option>
                 <option value="2">February</option>
                 <option value="3">March</option>
