@@ -1,4 +1,4 @@
-# CENTII Expense Tracker
+# CENTII Expense Tracker.
 
 
 CENTII is a comprehensive expense tracker application designed to help users manage their personal finances efficiently. It allows users to add, view, edit, and delete expenses, as well as filter expenses by month and download monthly reports. This README provides an overview of the project's features, setup instructions, and usage guidelines.
